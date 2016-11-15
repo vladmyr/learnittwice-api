@@ -1,0 +1,20 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./src",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es6",
+    "sourceMap": true,
+    "inlineSources": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": false,
+    "removeComments": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

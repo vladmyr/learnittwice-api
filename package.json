@@ -1,0 +1,27 @@
+{
+  "name": "node-ts",
+  "version": "1.0.0",
+  "description": "Node.js + TypeScript = Node.ts boilerplate",
+  "main": "index.ts",
+  "dependencies": {
+    "@types/bluebird": "^3.0.35",
+    "@types/mongoose": "^4.5.41",
+    "@types/node": "^6.0.46",
+    "@types/underscore": "^1.7.33",
+    "bluebird": "^3.4.6",
+    "mongoose": "^4.6.7",
+    "mongoose-deep-populate": "^3.0.0",
+    "mongoose-populate-extended": "0.0.4",
+    "systemjs": "^0.19.41",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "typescript": "next"
+  },
+  "scripts": {
+    "postinstall": "node -e \"var s='../src',d='node_modules/src',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
+    "tsc": "./node_modules/.bin/tsc --alwaysStrict --strictNullChecks"
+  },
+  "author": "Volodymyr Khytskyi",
+  "license": "MIT"
+}
