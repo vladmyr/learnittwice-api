@@ -1,8 +1,8 @@
 {
-  "name": "node-ts",
-  "version": "1.0.0",
-  "description": "Node.js + TypeScript = Node.ts boilerplate",
-  "main": "index.ts",
+  "name": "learnittwice-api",
+  "version": "0.0.1",
+  "description": "API webserver for LearnItTwice project",
+  "main": "src/index.ts",
   "dependencies": {
     "@types/bluebird": "^3.0.35",
     "@types/mongoose": "^4.5.41",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "postinstall": "node -e \"var s='../src',d='node_modules/src',fs=require('fs');fs.exists(d,function(e){e||fs.symlinkSync(s,d,'dir')});\"",
-    "tsc": "./node_modules/.bin/tsc --alwaysStrict --strictNullChecks"
+    "tsc": "./node_modules/.bin/tsc"
   },
   "author": "Volodymyr Khytskyi",
   "license": "MIT"

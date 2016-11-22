@@ -11,7 +11,11 @@
     "noImplicitAny": false,
     "noImplicitReturns": true,
     "noImplicitThis": false,
-    "removeComments": true
+    "noImplicitUseStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "removeComments": true,
+    "strictNullChecks": true
   },
   "exclude": [
     "node_modules",
