@@ -1,12 +1,11 @@
-// "use strict";
+import { Mongoose as UtilMongoose } from 'src/App/Domain/Helpers/Util';
 
-// module.exports = (define, defineSchema, SchemaTypes) => {
-//   return define("language", {
-//     // iso ISO-639
-//     _id: String,
-//     alphabet: [{
-//       letter: String,
-//       count: Number // number of lemmas which start with this letter
-//     }]
-//   })
-// };
+const Language = UtilMongoose.DefineModel('language', {
+  _id: String,
+  alphabet: [{
+    letter: String,
+    count: Number
+  }]
+});
+
+export default Language;

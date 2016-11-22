@@ -11,9 +11,9 @@ const TO_JSON_OMIT = ['_id', '__v'];
 
 
 // interfaces
-interface ISchemaDescription {
+// interface ISchemaDescription {
 
-}
+// }
 
 interface IDefineSchemaOptions {
   virtuals?: any,
@@ -34,7 +34,7 @@ class Mongoose {
   /**
    * Define mongoose model
    */
-  static DefineSchema(schemaDescription: Object, options: IDefineSchemaOptions): mongoose.Schema {
+  static DefineSchema(schemaDescription: Object, options: IDefineSchemaOptions = {}): mongoose.Schema {
     const mongooseDeepPopulate = MongooseDeepPopulate(mongoose);
     const mongoosePopulateExtended = MongoosePopulateExtended(mongoose);
 
@@ -98,7 +98,7 @@ class Mongoose {
     return schema;
   }
 
-  static DefineModel(modelName: string, schemaDescription: Object, options: IDefineSchemaOptions): mongoose.Model<any> {
+  static DefineModel(modelName: string, schemaDescription: Object, options: IDefineSchemaOptions = {}): mongoose.Model<any> {
     const schema = Mongoose.DefineSchema(schemaDescription, options);
     return mongoose.model(modelName, schema);
   }

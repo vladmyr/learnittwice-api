@@ -1,5 +1,5 @@
 node_modules
 dist
-src/**/*.js
-src/**/*.map
+**/*.js
+**/*.map
 **/*.log

@@ -1,13 +1,13 @@
 import * as _ from 'underscore';
 import * as Promise from 'bluebird';
 import * as fs from 'fs';
-import * as path from 'path';
-import * as stream from 'stream';
+// import * as path from 'path';
+// import * as stream from 'stream';
 
-interface IScanDirOptions {
-  includes?: Array<string>
-  excludes?: Array<string>
-}
+// interface IScanDirOptions {
+//   includes?: Array<string>
+//   excludes?: Array<string>
+// }
 
 class Fs {
   /**

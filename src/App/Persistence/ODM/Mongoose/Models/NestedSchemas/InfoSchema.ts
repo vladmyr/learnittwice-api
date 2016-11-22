@@ -14,3 +14,17 @@
 
 //   return infoSchema;
 // };
+
+import { Mongoose as UtilMongoose } from 'src/App/Domain/Helpers/Util';
+import SenseSchema from './SenseSchema';
+
+const InfoSchema = UtilMongoose.DefineSchema({
+  language: {
+    type: String,
+    required: true
+  },
+  order: Number,
+  sense: [SenseSchema] 
+});
+
+export default InfoSchema;

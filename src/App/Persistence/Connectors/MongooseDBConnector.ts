@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as Promise from 'bluebird';
 import * as mongoose from 'mongoose';
 
