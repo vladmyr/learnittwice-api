@@ -7,14 +7,15 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Build & start API server",
             "program": "${workspaceRoot}/src/index.ts",
             "cwd": "${workspaceRoot}",
             "outFiles": [
                 "${workspaceRoot}/src/*"
             ],
             "sourceMaps": true,
-            "preLaunchTask": "tsc"
+            "preLaunchTask": "tsc",
+            "console": "internalConsole"
         }
     ]
 }

@@ -1,13 +1,16 @@
-// 'use strict';
+// import * as url from 'url';
 
-// const _ = require('underscore');
-// const Promise = require('bluebird');
-// const fs = require('fs');
-// const url = require('url');
-// const http = require('http');
-// const https = require('https');
-
-// class Net {
+class Net {
+  public static getUri(
+    protocol:string,
+    user:string,
+    password:string,
+    host:string,
+    port:string,
+    database:string = ''
+  ):string {
+    return `${protocol}://${user}:${password}@${host}:${port}/${database}`;
+  }
 //   /**
 //    * Pipe data from internet
 //    * @param urlAddress
@@ -80,6 +83,6 @@
 //       })
 //     })
 //   }
-// }
+}
 
-// module.exports = Net;
+export default Net;

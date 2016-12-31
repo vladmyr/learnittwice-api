@@ -10,6 +10,25 @@ const config = {
           poolSize: 100
         }
       }
+    },
+    postgres: {
+      protocol: 'postgres',
+      user: 'postgres',
+      password: 'docker',
+      host: '127.0.0.1',
+      port: 5432,
+      database: 'docker',
+      poolSize: 100,
+      binary: true,
+      ssl: false, // ToDo: true
+      schemaMigrations: {
+        driver: 'pg',
+        migrationsDir: '/src/App/Persistence/Repositories/Postgres/Migrations',
+        schema: '_SchemaVersion',
+        migrationTable: '_SchemaVersion',
+        verbose: true,
+        dryRun: true
+      }
     }
   }
 }
