@@ -1,9 +1,18 @@
 {
-  "dev": {
+  "development": {
     "driver": "pg",
     "user": "postgres",
     "password": "docker",
     "host": "127.0.0.1",
+    "port": 5432,
     "database": "docker"
+  },
+  "development_test": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "docker",
+    "host": "127.0.0.1",
+    "port": 5433,
+    "database": "learnittwice_test"
   }
 }

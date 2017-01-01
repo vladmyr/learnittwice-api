@@ -8,12 +8,9 @@
             "type": "node",
             "request": "launch",
             "name": "Build & start API server",
-            "program": "${workspaceRoot}/src/index.ts",
+            "program": "${workspaceRoot}/bin/development.js",
             "cwd": "${workspaceRoot}",
-            "outFiles": [
-                "${workspaceRoot}/src/*"
-            ],
-            "sourceMaps": true,
+
             "preLaunchTask": "tsc",
             "console": "internalConsole"
         }

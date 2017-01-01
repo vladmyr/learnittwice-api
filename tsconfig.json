@@ -1,8 +1,8 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./src",
+    "rootDir": "./",
+    "outDir": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es6",
@@ -17,8 +17,11 @@
     "removeComments": true,
     "strictNullChecks": true
   },
+  "include": [
+    "./bin",
+    "./src"
+  ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "node_modules"
   ]
 }

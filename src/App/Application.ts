@@ -1,5 +1,5 @@
 import * as Promise from 'bluebird';
-import config from 'src/config';
+import config from 'config';
 
 import MongooseDBConnector from 'src/App/Persistence/Connectors/MongooseDBConnector';
 import PostgresDBConnector from 'src/App/Persistence/Connectors/PostgresDBConnector';
