@@ -1,8 +1,16 @@
-import { IDatabase, ParameterizedQuery } from 'pg-promise';
+import { IDatabase, ITask } from 'pg-promise';
+import { TableName } from 'src/App/Persistence/Repositories/PostgresMeta';
 import { TFLemmaDAO, ILemmaDAO, ILemmaCommands } from 
   'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
 
 class LemmaCommands {
+  public static COMMAND_CREATE =
+    `INSERT INTO "${TableName.LEMMA}" (lemma) VALUES($(lemma)) RETURNING *`;
+  public static COMMAND_UPDATE =
+    `UPDATE "${TableName.LEMMA}" SET lemma = $(lemma) WHERE id = $(id) RETURNING *`;
+  public static COMMAND_DELETE =
+    `DELETE FROM "${TableName.LEMMA}" WHERE id = $(id)`;
+
   private static _instance:ILemmaCommands;
   private _db:IDatabase<{}>;
 
@@ -22,58 +30,44 @@ class LemmaCommands {
     return LemmaCommands._instance;
   }
 
-  public create(lemma: ILemmaDAO['lemma']): Promise<ILemmaDAO> {
-    return this._db
-      .one(this.createQuery(lemma))
+  public getDb() {
+    return this._db;
+  }
+
+  public createOne(lemma: ILemmaDAO['lemma'], t: ITask<{}> = undefined): Promise<ILemmaDAO> {
+    return this.getScopeOfExecution(t)
+      .one(LemmaCommands.COMMAND_CREATE, {
+        lemma
+      })
       .then((data:ILemmaDAO) => {
         return data;
       })
-      .catch((err) => {
-        console.error(err);
+  }
+
+  public updateOne(
+    id: ILemmaDAO['id'], 
+    lemma: ILemmaDAO['lemma'], 
+    t: ITask<{}> = undefined
+  ): Promise<TFLemmaDAO> {
+    return this.getScopeOfExecution(t)
+      .one(LemmaCommands.COMMAND_UPDATE, {
+        id,
+        lemma
       })
-  }
-
-  public createQuery(lemma: ILemmaDAO['lemma']): ParameterizedQuery {
-    return new ParameterizedQuery(
-      'INSERT INTO "Lemma"("lemma") VALUES($1) RETURNING *', 
-      [lemma]
-    );
-  }
-
-  public update(id: ILemmaDAO['id'], lemma: ILemmaDAO['lemma']): Promise<TFLemmaDAO> {
-    return this._db
-      .one(this.updateQuery(id, lemma))
       .then((data:TFLemmaDAO) => {
         return data;
       })
-      .catch((err) => {
-        console.error(err);
+  }
+
+  public deleteOne(id: ILemmaDAO['id'], t: ITask<{}> = undefined): Promise<void> {
+    return this.getScopeOfExecution(t)
+      .none(LemmaCommands.COMMAND_DELETE, { 
+        id 
       })
   }
 
-  public updateQuery(
-    id: ILemmaDAO['id'], 
-    lemma: ILemmaDAO['lemma']
-  ): ParameterizedQuery {
-    return new ParameterizedQuery(
-      'Update "Lemma" SET lemma = $1 WHERE id = $2 RETURNING *',
-      [lemma, id]
-    );
-  }
-
-  delete(id: ILemmaDAO['id']): Promise<void> {
-    return this._db
-      .none(this.deleteQuery(id))
-      .catch((err) => {
-        console.error(err);
-      })
-  }
-
-  public deleteQuery(id: ILemmaDAO['id']): ParameterizedQuery {
-    return new ParameterizedQuery(
-      'DELETE FROM "Lemma" WHERE id = $1',
-      [id]
-    );
+  private getScopeOfExecution(t: ITask<{}> = undefined) {
+    return t || this._db;
   }
 }
 

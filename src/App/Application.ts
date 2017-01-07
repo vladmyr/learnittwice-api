@@ -14,9 +14,7 @@ class Application {
   public services;
   public dbConnectors:CollectionDBConnector = {};
 
-  public constructor() {
-
-  }
+  public constructor() {}
 
   public initialize(): Promise<Application> {
     const self = this;

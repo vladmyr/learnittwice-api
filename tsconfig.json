@@ -15,7 +15,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "removeComments": true,
-    "strictNullChecks": true
+    "strictNullChecks": false    
   },
   "include": [
     "./bin",

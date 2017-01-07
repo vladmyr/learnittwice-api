@@ -1,8 +1,15 @@
-import { IDatabase, ParameterizedQuery } from 'pg-promise';
+import { IDatabase } from 'pg-promise';
+import { TableName } from 'src/App/Persistence/Repositories/PostgresMeta';
 import { ILemmaDAO, ILemmaQueries, TFLemmaDAO } from 
   'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
+import { Postgres } from 'src/App/Domain/Helpers/Util';
 
 class LemmaQueries {
+  public static QUERY_FIND_ONE = 
+    `SELECT * FROM "${TableName.LEMMA}" WHERE id = $(id)`
+  public static QUERY_FIND_MANY =
+    `SELECT * FROM "${TableName.LEMMA}" WHERE id IN ($(ids^))`
+
   private static _instance:ILemmaQueries;
   private _db:IDatabase<{}>;
 
@@ -22,16 +29,15 @@ class LemmaQueries {
     return LemmaQueries._instance;
   }
 
-  public findOneQuery(id: ILemmaDAO['id']):ParameterizedQuery {
-    return new ParameterizedQuery(
-      'SELECT * FROM "Lemma" WHERE id = $1', 
-      [id]
-      );
+  public getDb() {
+    return this._db;
   }
 
   public findOne(id: ILemmaDAO['id']):Promise<TFLemmaDAO> {
     return this._db
-      .oneOrNone(this.findOneQuery(id))
+      .oneOrNone(LemmaQueries.QUERY_FIND_ONE, {
+        id
+      })
       .then((data:TFLemmaDAO) => {
         return data
       })
@@ -40,16 +46,11 @@ class LemmaQueries {
       });
   }
 
-  public findManyQuery(ids: Array<ILemmaDAO['id']>):ParameterizedQuery {
-    return new ParameterizedQuery(
-      'SELECT * FROM "Lemma" WHERE id = ANY($1::int[])', 
-      [ids]
-    )
-  }
-
   public findMany(ids: Array<ILemmaDAO['id']>):Promise<Array<TFLemmaDAO>> {
     return this._db
-      .manyOrNone(this.findManyQuery(ids))
+      .manyOrNone(LemmaQueries.QUERY_FIND_MANY, {
+        ids: Postgres.FormatArray(ids)
+      })
       .then((data:Array<TFLemmaDAO> = []) => {
         return data;
       })

@@ -1,4 +1,4 @@
-import { ParameterizedQuery } from 'pg-promise';
+import { ITask } from 'pg-promise';
 
 type TFLemmaDAO = ILemmaDAO | undefined;
 
@@ -8,22 +8,19 @@ interface ILemmaDAO {
 }
 
 interface ILemmaCommands {
-  create(lemma: ILemmaDAO['lemma']): Promise<ILemmaDAO>;
-  createQuery(lemma: ILemmaDAO['lemma']): ParameterizedQuery
-  update(id: ILemmaDAO['id'], lemma: ILemmaDAO['lemma']): Promise<TFLemmaDAO>;
-  updateQuery(
-    id: ILemmaDAO['id'], 
-    lemma: ILemmaDAO['lemma']
-  ): ParameterizedQuery;
-  delete(id: ILemmaDAO['id']): Promise<void>;
-  deleteQuery(id: ILemmaDAO['id']): ParameterizedQuery;
+  getDb();
+  createOne(lemma: ILemmaDAO['lemma']): Promise<ILemmaDAO>;
+  createOne(lemma: ILemmaDAO['lemma'], t: ITask<{}>): Promise<ILemmaDAO>;
+  updateOne(id: ILemmaDAO['id'], lemma: ILemmaDAO['lemma']): Promise<TFLemmaDAO>;
+  updateOne(id: ILemmaDAO['id'], lemma: ILemmaDAO['lemma'], t: ITask<{}>): Promise<TFLemmaDAO>;
+  deleteOne(id: ILemmaDAO['id']): Promise<void>;
+  deleteOne(id: ILemmaDAO['id'], t: ITask<{}>): Promise<void>;
 }
 
 interface ILemmaQueries {
+  getDb();
   findOne(id: ILemmaDAO['id']): Promise<TFLemmaDAO>;
-  findOneQuery(id: ILemmaDAO['id']): ParameterizedQuery;
   findMany(ids: Array<ILemmaDAO['id']>): Promise<Array<TFLemmaDAO>>;
-  findManyQuery(ids: Array<ILemmaDAO['id']>): ParameterizedQuery;
 }
 
 export { ILemmaDAO, ILemmaCommands, ILemmaQueries, TFLemmaDAO };

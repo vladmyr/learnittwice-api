@@ -7,8 +7,15 @@
   "suppressTaskName": true,
   "showOutput": "silent",
   "tasks": [{
-    "taskName": "tsc",
+    "taskName": "build:tsc",
     "problemMatcher": "$tsc",
-    "args": ["run", "tsc"]
+    "isBuildCommand": true,
+    "args": ["run", "build:tsc"]
+  }],
+  "tasks": [{
+    "taskName": "watch:tsc",
+    "problemMatcher": "$tsc",
+    "isBuildCommand": true,
+    "args": ["run", "watch:tsc"]
   }]
 }

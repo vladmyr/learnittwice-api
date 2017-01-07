@@ -16,7 +16,7 @@ const config = {
       user: 'postgres',
       password: 'docker',
       host: '127.0.0.1',
-      port: 5432,
+      port: 5433,
       database: 'learnittwice_test',
       poolSize: 100,
       binary: true,
@@ -30,6 +30,19 @@ const config = {
         dryRun: true
       }
     }
+  },
+  filepath: {
+    databaseDump: {
+      postgres: 'src/Test/Persistence/Postgres/SQL/dump_postgres_test.sql'
+    }
+  },
+  path: {
+    persistence: {
+      postgres: 'src/App/Persistence/Repositories/Postgres'
+    }
+  },
+  regexMatch: {
+    specFiles: /.*Spec.js$/
   }
 }
 

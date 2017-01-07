@@ -1,7 +1,7 @@
 import * as _ from 'underscore';
 import * as Promise from 'bluebird';
 import * as fs from 'fs';
-// import * as path from 'path';
+import * as path from 'path';
 // import * as stream from 'stream';
 
 // interface IScanDirOptions {
@@ -16,7 +16,7 @@ class Fs {
    * @param {Object}  [options]
    * @returns {Promise}
    */
-  static ReadFile(filePath: string, options: Object): Promise<string> {
+  public static ReadFile(filePath: string, options: Object): Promise<string> {
     options = _.extend({
       encoding: 'utf8'
     }, options);
@@ -84,7 +84,7 @@ class Fs {
    * @param   {String}  dir
    * @returns {Promise}
    */
-  static Mkdir (dir:string): Promise<Object>{
+  public static Mkdir (dir:string): Promise<Object>{
     return new Promise((fulfill, reject) => {
       fs.mkdir(dir, function(err){
         if(!err || err.code === "EEXIST"){
@@ -93,6 +93,41 @@ class Fs {
           return reject();
         }
       });
+    });
+  }
+
+  public static ReaddirRecursively(dir: string) /*: Promise<string[]> */ {
+    return Promise.fromCallback((resolver) => {
+      return fs.readdir(dir, resolver);
+    })
+    .then((list: string[]) => {
+      if (!list.length) {
+        return [];
+      }
+
+      return Promise.reduce(list, (accumulator, listItem) => {
+        const pathItem = path.resolve(dir, listItem);
+        return Promise.fromCallback((resolver) => {
+          return fs.stat(pathItem, resolver);
+        })
+        .then((stat) => {
+          if (!stat) {
+            // stats were not obtained
+            return accumulator;
+          } else if (stat.isDirectory()) {
+            // pathItem is a directory
+            return Fs
+              .ReaddirRecursively(pathItem)
+              .then((arrDir) => {
+                return accumulator.concat(arrDir);
+              })
+          } else {
+            // pathItem is a file
+            accumulator.push(pathItem);
+            return accumulator
+          }
+        });
+      }, []);
     });
   }
 }
