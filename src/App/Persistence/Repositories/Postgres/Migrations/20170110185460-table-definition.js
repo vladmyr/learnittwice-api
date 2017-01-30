@@ -12,7 +12,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db
-    .createTable('Lemma', {
+    .createTable('Definition', {
       id: {
         type: 'int',
         unsigned: true,
@@ -20,23 +20,31 @@ exports.up = function(db) {
         primaryKey: true,
         autoIncrement: true
       },
-      lemma: {
-        type: 'text',
+      synsetId: {
+        type: 'int',
+        unsigned: true,
         notNull: true,
-        unique: true
+        foreignKey: {
+          name: 'fk_definition__synset_id',
+          table: 'Synset',
+          mapping: {
+            synsetId: 'id'
+          },
+          rules: {
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          }
+        }
       }
-    })
-    .then(() => {
-      return db.addIndex('Lemma', 'idx_lemma__lemma', ['lemma'], true);
     });
 };
 
 exports.down = function(db) {
   return db
-    .removeIndex('Lemma', 'idx_lemma__lemma')
+    .removeForeignKey('Definition', 'fk_definition__synset_id', { dropIndex: true })
     .then(() => {
-      return db.dropTable('Lemma');
-    });
+      return db.dropTable('Definition');
+    })
 };
 
 exports._meta = {

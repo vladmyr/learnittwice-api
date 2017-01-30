@@ -12,7 +12,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db
-    .createTable('Lemma', {
+    .createTable('LexemeForm', {
       id: {
         type: 'int',
         unsigned: true,
@@ -20,23 +20,28 @@ exports.up = function(db) {
         primaryKey: true,
         autoIncrement: true
       },
-      lemma: {
+      form: {
         type: 'text',
         notNull: true,
         unique: true
       }
     })
     .then(() => {
-      return db.addIndex('Lemma', 'idx_lemma__lemma', ['lemma'], true);
+      return db.addIndex(
+        'LexemeForm', 
+        'idx_lexeme_form__form', 
+        ['form'], 
+        true
+      );
     });
 };
 
 exports.down = function(db) {
   return db
-    .removeIndex('Lemma', 'idx_lemma__lemma')
+    .removeIndex('LexemeForm', 'idx_lexeme_form__form')
     .then(() => {
-      return db.dropTable('Lemma');
-    });
+      return db.dropTable('LexemeForm');
+    })
 };
 
 exports._meta = {

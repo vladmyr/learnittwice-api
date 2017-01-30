@@ -6,4 +6,6 @@
         },
         "**/*.map": true
     }
+,
+"vsicons.presets.angular": false
 }

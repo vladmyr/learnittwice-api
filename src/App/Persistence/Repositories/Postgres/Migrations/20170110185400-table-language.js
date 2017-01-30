@@ -12,7 +12,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db
-    .createTable('Lemma', {
+    .createTable('Language', {
       id: {
         type: 'int',
         unsigned: true,
@@ -20,23 +20,24 @@ exports.up = function(db) {
         primaryKey: true,
         autoIncrement: true
       },
-      lemma: {
-        type: 'text',
+      iso: {
+        type: 'char',
+        length: 5,
         notNull: true,
         unique: true
       }
     })
     .then(() => {
-      return db.addIndex('Lemma', 'idx_lemma__lemma', ['lemma'], true);
-    });
+      return db.addIndex('Language', 'idx_language__iso', ['iso'], true);
+    })
 };
 
 exports.down = function(db) {
   return db
-    .removeIndex('Lemma', 'idx_lemma__lemma')
+    .removeIndex('Language', 'idx_language__iso')
     .then(() => {
-      return db.dropTable('Lemma');
-    });
+      return db.dropTable('Language');
+    })
 };
 
 exports._meta = {
