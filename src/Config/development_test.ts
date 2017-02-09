@@ -33,7 +33,7 @@ const config = {
   },
   filepath: {
     databaseDump: {
-      postgres: 'src/Test/Persistence/Postgres/SQL/dump_postgres_test.sql'
+      postgres: 'src/Test/Persistence/Postgres/Seeds/dump_postgres_test.sql'
     }
   },
   path: {

@@ -12,7 +12,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db
-    .createTable('RefLexemeLexemeForm', {
+    .createTable('RefSenseLexemeForm', {
       id: {
         type: 'int',
         unsigned: true,
@@ -20,15 +20,15 @@ exports.up = function(db) {
         primaryKey: true,
         autoIncrement: true
       },
-      lexemeId: {
+      senseId: {
         type: 'int',
         unsigned: true,
         notNull: true,
         foreignKey: {
-          name: 'fk_ref_lexemelexemeform__lexeme_id',
-          table: 'Lexeme',
+          name: 'fk_refsenselexemeform__sense_id',
+          table: 'Sense',
           mapping: {
-            lexemeId: 'id'
+            senseId: 'id'
           },
           rules: {
             onDelete: 'CASCADE',
@@ -41,7 +41,7 @@ exports.up = function(db) {
         unsigned: true,
         notNull: true,
         foreignKey: {
-          name: 'fk_ref_lexemelexemeform_lexeme__form_id',
+          name: 'fk_refsenselexemeform__form_id',
           table: 'LexemeForm',
           mapping: {
             lexemeFormId: 'id'
@@ -58,19 +58,19 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db
     .removeForeignKey(
-      'RefLexemeLexemeForm', 
-      'fk_ref_lexemelexemeform__lexeme_id', 
+      'RefSenseLexemeForm', 
+      'fk_refsenselexemeform__sense_id', 
       { dropIndex: true }
     )
     .then(() => {
       return db.removeForeignKey(
-        'RefLexemeLexemeForm',
-        'fk_ref_lexemelexemeform_lexeme__form_id',
+        'RefSenseLexemeForm',
+        'fk_refsenselexemeform__form_id',
         { dropIndex: true }
       )
     })
     .then(() => {
-      return db.dropTable('RefLexemeLexemeForm');
+      return db.dropTable('RefSenseLexemeForm');
     })
 };
 

@@ -1,6 +1,9 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "types": [
+      "bluebird-global"
+    ],
     "rootDir": "./",
     "outDir": "./",
     "module": "commonjs",

@@ -1,20 +1,22 @@
-import { IDatabase } from 'pg-promise';
+import { IDatabase, ITask } from 'pg-promise';
 import { TableName } from 'src/App/Persistence/Repositories/PostgresMeta';
 import { ILemmaDAO, ILemmaQueries, TFLemmaDAO } from 
   'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
 import { Postgres } from 'src/App/Domain/Helpers/Util';
+import { CommandQueryBase } from '../CommandQueryBase';
 
-class LemmaQueries {
-  public static QUERY_FIND_ONE = 
-    `SELECT * FROM "${TableName.LEMMA}" WHERE id = $(id)`
-  public static QUERY_FIND_MANY =
-    `SELECT * FROM "${TableName.LEMMA}" WHERE id IN ($(ids^))`
+class LemmaQueries extends CommandQueryBase {
+  public static readonly QUERY_FIND_ONE = 
+    `SELECT * FROM "${TableName.LEMMA}" WHERE id = $(id)`;
+  public static readonly QUERY_FIND_ONE_BY_LEMMA = 
+    `SELECT * FROM "${TableName.LEMMA}" WHERE "lemma" = $(lemma)`;
+  public static readonly QUERY_FIND_MANY =
+    `SELECT * FROM "${TableName.LEMMA}" WHERE id IN ($(ids^))`;
 
   private static _instance:ILemmaQueries;
-  private _db:IDatabase<{}>;
 
   private constructor(db:IDatabase<{}>) {
-    this._db = db;
+    super(db);
   }
 
   public static GetInstance(db?:IDatabase<{}>):ILemmaQueries {
@@ -29,12 +31,11 @@ class LemmaQueries {
     return LemmaQueries._instance;
   }
 
-  public getDb() {
-    return this._db;
-  }
-
-  public findOne(id: ILemmaDAO['id']):Promise<TFLemmaDAO> {
-    return this._db
+  public findOne(
+    id: ILemmaDAO['id'],
+    t: ITask<{}> = undefined
+  ):Promise<TFLemmaDAO> {
+    return this._getScopeOfExecution(t)
       .oneOrNone(LemmaQueries.QUERY_FIND_ONE, {
         id
       })
@@ -46,8 +47,24 @@ class LemmaQueries {
       });
   }
 
-  public findMany(ids: Array<ILemmaDAO['id']>):Promise<Array<TFLemmaDAO>> {
-    return this._db
+  public findOneByLemma(
+    lemma: ILemmaDAO['lemma'],
+    t: ITask<{}> = undefined
+  ): Promise<TFLemmaDAO> {
+    return this._getScopeOfExecution(t)
+      .oneOrNone(LemmaQueries.QUERY_FIND_ONE_BY_LEMMA, {
+        lemma
+      })
+      .then((data: TFLemmaDAO) => {
+        return data;
+      })
+  }
+
+  public findMany(
+    ids: Array<ILemmaDAO['id']>,
+    t: ITask<{}> = undefined
+  ): Promise<Array<TFLemmaDAO>> {
+    return this._getScopeOfExecution(t)
       .manyOrNone(LemmaQueries.QUERY_FIND_MANY, {
         ids: Postgres.FormatArray(ids)
       })

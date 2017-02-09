@@ -67,6 +67,12 @@ exports.up = function(db) {
             onUpdate: 'CASCADE'
           }
         }
+      },
+      tagCount: {
+        type: 'int',
+        unsigned: true,
+        notNull: true,
+        defaultValue: 0
       }
     });
 };

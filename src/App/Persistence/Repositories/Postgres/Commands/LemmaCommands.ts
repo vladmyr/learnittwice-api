@@ -1,21 +1,23 @@
+import * as Promise from 'bluebird';
 import { IDatabase, ITask } from 'pg-promise';
 import { TableName } from 'src/App/Persistence/Repositories/PostgresMeta';
 import { TFLemmaDAO, ILemmaDAO, ILemmaCommands } from 
   'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
+import { CommandsBase } from './CommandsBase';
+import ArrayUtil from 'src/App/Domain/Helpers/Modules/Array';
 
-class LemmaCommands {
-  public static COMMAND_CREATE =
+class LemmaCommands extends CommandsBase {
+  public static readonly COMMAND_CREATE =
     `INSERT INTO "${TableName.LEMMA}" (lemma) VALUES($(lemma)) RETURNING *`;
-  public static COMMAND_UPDATE =
+  public static readonly COMMAND_UPDATE =
     `UPDATE "${TableName.LEMMA}" SET lemma = $(lemma) WHERE id = $(id) RETURNING *`;
-  public static COMMAND_DELETE =
+  public static readonly COMMAND_DELETE =
     `DELETE FROM "${TableName.LEMMA}" WHERE id = $(id)`;
 
   private static _instance:ILemmaCommands;
-  private _db:IDatabase<{}>;
 
   private constructor(db:IDatabase<{}>) {
-    this._db = db;
+    super(db);
   }
 
   public static GetInstance(db?:IDatabase<{}>):ILemmaCommands {
@@ -30,12 +32,11 @@ class LemmaCommands {
     return LemmaCommands._instance;
   }
 
-  public getDb() {
-    return this._db;
-  }
-
-  public createOne(lemma: ILemmaDAO['lemma'], t: ITask<{}> = undefined): Promise<ILemmaDAO> {
-    return this.getScopeOfExecution(t)
+  public createOne(
+    lemma: ILemmaDAO['lemma'], 
+    t: ITask<{}> = undefined
+  ): Promise<ILemmaDAO> {
+    return this._getScopeOfExecution(t)
       .one(LemmaCommands.COMMAND_CREATE, {
         lemma
       })
@@ -44,12 +45,38 @@ class LemmaCommands {
       })
   }
 
+  public createMany(
+    lemmas: ILemmaDAO['lemma'][], 
+    t: ITask<{}> = undefined
+  ): Promise<ILemmaDAO[]> {
+    const mappedLemmas = lemmas.map<{ lemma: string }>((lemma) => {
+      return { lemma };
+    });
+    const chunks = ArrayUtil.Chunk<{ lemma: string }>(mappedLemmas, this._INSERt_CHUNK_SIZE);
+    
+    return Promise
+      .map(chunks, (chunk) => {
+        return this._getScopeOfExecution(t)
+          .many(
+            this._knex(TableName.LEMMA)
+              .insert(chunk, '*')
+              .toString()
+          )
+          .then((data: ILemmaDAO[] = []) => {
+            return data;
+          })
+      }, { concurrency: 1 })
+      .then((data: ILemmaDAO[][] = []) => {
+        return [].concat.apply([], data);
+      })
+  }
+
   public updateOne(
     id: ILemmaDAO['id'], 
     lemma: ILemmaDAO['lemma'], 
     t: ITask<{}> = undefined
   ): Promise<TFLemmaDAO> {
-    return this.getScopeOfExecution(t)
+    return this._getScopeOfExecution(t)
       .one(LemmaCommands.COMMAND_UPDATE, {
         id,
         lemma
@@ -60,14 +87,10 @@ class LemmaCommands {
   }
 
   public deleteOne(id: ILemmaDAO['id'], t: ITask<{}> = undefined): Promise<void> {
-    return this.getScopeOfExecution(t)
+    return this._getScopeOfExecution(t)
       .none(LemmaCommands.COMMAND_DELETE, { 
         id 
       })
-  }
-
-  private getScopeOfExecution(t: ITask<{}> = undefined) {
-    return t || this._db;
   }
 }
 

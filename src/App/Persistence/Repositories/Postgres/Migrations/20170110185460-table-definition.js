@@ -35,6 +35,27 @@ exports.up = function(db) {
             onUpdate: 'CASCADE'
           }
         }
+      },
+      languageId: {
+        type: 'int',
+        unsigned: true,
+        notNull: true,
+        foreignKey: {
+          name: 'fk_definition__language_id',
+          table: 'Language',
+          mapping: {
+            languageId: 'id'
+          },
+          rules: {
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          }
+        }
+      },
+      definition: {
+        type: 'text',
+        notNull: true,
+        defaultValue: ''
       }
     });
 };

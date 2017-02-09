@@ -26,6 +26,29 @@ describe('LemmaQueries', () => {
     });
   })
 
+  describe('#findOneByLemma', () => {
+    it ('returns single existing lemma', () => {
+      const expectedLemma = {
+        id: 1,
+        lemma: 'lemma001'
+      }
+
+      return LemmaQueries.GetInstance()
+        .findOneByLemma(expectedLemma.lemma)
+        .then((lemma) => {
+          assert.deepEqual(lemma, expectedLemma);
+        });
+    });
+
+    it ('returns null for non-existing lemma', () => {
+      return LemmaQueries.GetInstance()
+        .findOneByLemma('very-dummy-non-existing-lemma')
+        .then((lemma) => {
+          assert.deepEqual(lemma, null);
+        });
+    });
+  })
+
   describe('#findMany', () => {
     it ('returns single existing lemma', () => {
       const expectedLemma = {

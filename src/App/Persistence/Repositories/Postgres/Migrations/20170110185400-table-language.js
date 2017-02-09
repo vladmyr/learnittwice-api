@@ -1,5 +1,7 @@
 'use strict';
 
+var fs = require('fs');
+
 var dbm;
 var type;
 var seed;
@@ -29,6 +31,15 @@ exports.up = function(db) {
     })
     .then(() => {
       return db.addIndex('Language', 'idx_language__iso', ['iso'], true);
+    })
+    .then(() => {
+      fs.readFile(
+        'src/App/Persistence/Repositories/Postgres/Seeds/0001_seed_table_language.sql', 
+        'utf8',
+        (err, sqlSeed) => {
+          if (err) throw err;
+          return db.runSql(sqlSeed);
+      });
     })
 };
 

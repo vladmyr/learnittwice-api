@@ -21,6 +21,7 @@ const config = {
       poolSize: 100,
       binary: true,
       ssl: false, // ToDo: true
+      // FIXME: not used
       schemaMigrations: {
         driver: 'pg',
         migrationsDir: '/src/App/Persistence/Repositories/Postgres/Migrations',

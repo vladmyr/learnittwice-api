@@ -21,6 +21,15 @@
             "cwd": "${workspaceRoot}",
             "console": "internalConsole",
             "sourceMaps": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "CLI",
+            "program": "${workspaceRoot}/bin/development_cli.js",
+            "cwd": "${workspaceRoot}",
+            "console": "internalConsole",
+            "sourceMaps": true
         }
     ]
 }

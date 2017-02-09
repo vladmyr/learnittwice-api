@@ -16,7 +16,7 @@ class MongooseDBConnector {
     const self = this;
 
     return new Promise((fulfill, reject) => {
-      self._mongoose.set('debug', true);
+      self._mongoose.set('debug', false);
       self._mongoose.connect(self._uri, self._options);
       self._mongoose.connection.on('error', reject);
       self._mongoose.connection.once('open', fulfill);
