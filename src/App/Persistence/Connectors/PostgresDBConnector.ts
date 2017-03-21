@@ -13,14 +13,14 @@ class PostgresDBConnector {
   private _db:pgPromise.IDatabase<{}>;
 
   public constructor(
-    host:string,
-    port:number,
-    database:string,
-    user:string,
-    password:string,
-    ssl:boolean,
-    binary:boolean,
-    poolSize:number
+    host: string,
+    port: number,
+    database: string,
+    user: string,
+    password: string,
+    ssl: boolean,
+    binary: boolean,
+    poolSize: number
   ) {
     const initOptions = {
       promiseLib: Promise,
@@ -42,7 +42,7 @@ class PostgresDBConnector {
 
   public initialize():PostgresDBConnector {
     this._db = this._pgp(this._connectionConfig);
-    this._initializeRepositories();
+    this._initializeModels();
 
     return this;
   }
@@ -55,7 +55,9 @@ class PostgresDBConnector {
     this._pgp.end();
   }
 
-  private _initializeRepositories():void {
+  
+
+  private _initializeModels():void {
     // iterate over all CQRS models
     for (let modelName in PostgresModels) {
       // initialize an instance of each model

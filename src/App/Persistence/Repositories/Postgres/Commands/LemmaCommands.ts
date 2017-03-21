@@ -40,7 +40,7 @@ class LemmaCommands extends CommandsBase {
       .one(LemmaCommands.COMMAND_CREATE, {
         lemma
       })
-      .then((data:ILemmaDAO) => {
+      .then((data: ILemmaDAO) => {
         return data;
       })
   }
@@ -52,7 +52,7 @@ class LemmaCommands extends CommandsBase {
     const mappedLemmas = lemmas.map<{ lemma: string }>((lemma) => {
       return { lemma };
     });
-    const chunks = ArrayUtil.Chunk<{ lemma: string }>(mappedLemmas, this._INSERt_CHUNK_SIZE);
+    const chunks = ArrayUtil.Chunk<{ lemma: string }>(mappedLemmas, this._INSERT_CHUNK_SIZE);
     
     return Promise
       .map(chunks, (chunk) => {

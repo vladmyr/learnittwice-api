@@ -33,7 +33,7 @@ class LemmaQueries extends CommandQueryBase {
 
   public findOne(
     id: ILemmaDAO['id'],
-    t: ITask<{}> = undefined
+    t?: ITask<{}>
   ):Promise<TFLemmaDAO> {
     return this._getScopeOfExecution(t)
       .oneOrNone(LemmaQueries.QUERY_FIND_ONE, {
@@ -49,7 +49,7 @@ class LemmaQueries extends CommandQueryBase {
 
   public findOneByLemma(
     lemma: ILemmaDAO['lemma'],
-    t: ITask<{}> = undefined
+    t?: ITask<{}>
   ): Promise<TFLemmaDAO> {
     return this._getScopeOfExecution(t)
       .oneOrNone(LemmaQueries.QUERY_FIND_ONE_BY_LEMMA, {
@@ -62,7 +62,7 @@ class LemmaQueries extends CommandQueryBase {
 
   public findMany(
     ids: Array<ILemmaDAO['id']>,
-    t: ITask<{}> = undefined
+    t?: ITask<{}>
   ): Promise<Array<TFLemmaDAO>> {
     return this._getScopeOfExecution(t)
       .manyOrNone(LemmaQueries.QUERY_FIND_MANY, {

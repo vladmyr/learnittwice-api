@@ -30,6 +30,13 @@ const config = {
         verbose: true,
         dryRun: true
       }
+    },
+    neo4j: {
+      host: '127.0.0.1',
+      port: '7687',
+      user: 'neo4j',
+      password: 'docker',
+      poolSize: 1
     }
   }
 }

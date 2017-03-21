@@ -1,13 +1,22 @@
 import * as Promise from 'bluebird';
 import { ITask } from 'pg-promise';
 
+import { ILabel } from '../Neo4jMeta';
+
 // FIXME: TFLemmaDAO -> TuLemmaDAO
 export type TFLemmaDAO = ILemmaDAO | undefined;
+export type TLemmaGphDAORelationLabel = ILabel['SENSE'];
 
-export interface ILemmaDAO {
+export interface ILemmaKey {
   id: number
+}
+
+export interface ILemmaProps {
   lemma: string
 }
+
+export interface ILemmaDAO extends ILemmaKey, ILemmaProps {}
+export interface ILemmaGphDAO extends ILemmaKey {}
 
 export interface ILemmaCommands {
   getDb()
@@ -36,4 +45,30 @@ export interface ILemmaQueries {
   
   findMany(ids: ILemmaDAO['id'][]): Promise<TFLemmaDAO[]>
   findMany(ids: ILemmaDAO['id'][], t: ITask<{}>): Promise<TFLemmaDAO[]>
+}
+
+export interface ILemmaCommandsGph {
+  createOne(id: ILemmaGphDAO['id']): Promise<ILemmaGphDAO>
+  createOne(id: ILemmaGphDAO['id'], t: any): Promise<ILemmaGphDAO>
+
+  createRelationOne(
+    id: ILemmaGphDAO['id'], 
+    relationLabel: TLemmaGphDAORelationLabel, 
+    relationId: number,
+    t?: any
+  ): Promise<void>
+
+  deleteOne(id: ILemmaGphDAO['id']): Promise<void>
+  deleteOne(id: ILemmaGphDAO['id'], t: any): Promise<void>
+
+  deleteRelationOne(
+    id: ILemmaGphDAO['id'], 
+    relationLabel: TLemmaGphDAORelationLabel, 
+    relationId: number,
+    t?: any
+  ): Promise<void>
+}
+
+export interface ILemmaQueriesGph {
+
 }

@@ -2,13 +2,15 @@ import { ITask } from 'pg-promise';
 
 export type TuLanguageDAO = ILanguageDAO | undefined;
 
+export interface ILanguageKey {
+  id: number
+}
+
 export interface ILanguageProps {
   iso: string
 }
 
-export interface ILanguageDAO extends ILanguageProps{
-  id: number
-}
+export interface ILanguageDAO extends ILanguageKey, ILanguageProps {}
 
 export interface ILanguageQueries {
   getDb()

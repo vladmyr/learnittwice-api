@@ -9,9 +9,11 @@ export interface ISenseProps {
   tagCount: number
 }
 
-export interface ISenseDAO extends ISenseProps{
+export interface ISenseKey extends ISenseProps {
   id: number
 }
+
+export interface ISenseDAO extends ISenseKey, ISenseProps {}
 
 export interface ISenseQueries {
   getDb()

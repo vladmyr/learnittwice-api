@@ -2,15 +2,17 @@ import { ITask } from 'pg-promise';
 
 export type TuDefinitionDAO = IDefinitionDAO | undefined;
 
+export interface IDefinitionKey {
+  id: number
+}
+
 export interface IDefinitionProps {
   synsetId: number
   languageId: number
   definition: string
 }
 
-export interface IDefinitionDAO extends IDefinitionProps {
-  id: number
-}
+export interface IDefinitionDAO extends IDefinitionKey, IDefinitionProps {}
 
 export interface IDefinitionQueries {
   getDb()
