@@ -1,0 +1,75 @@
+version: '3.1'
+volumes:
+  postgres_data:
+    external:
+      name: dockerlearnittwiceapi_postgres_data
+  postgres_test_data:
+    external:
+      name: dockerlearnittwiceapi_postgres_test_data
+  mongodb_data:
+    external:
+      name: dockerlearnittwiceapi_mongodb_data
+  neo4j_data:
+    external:
+      name: dockerlearnittwiceapi_neo4j_data
+services:
+  # mongodb:
+  #   build: docker/mongodb
+  #   volumes:
+  #     - ./mongodb/shared:/shared
+  #     - mongodb_data:/data
+  #   expose:
+  #     - 27017
+  #   ports:
+  #     - 27017:27017
+  #   container_name: mongodb
+  postgres:
+    build: docker/postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: docker
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    container_name: postgres
+  # postgres_test:
+  #   build: docker/postgres
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: docker
+  #     POSTGRES_DB: learnittwice_test
+  #     PGDATA: /var/lib/postgresql/data
+  #   volumes:
+  #     - postgres_test_data:/var/lib/postgresql/data
+  #   expose:
+  #     - 5432
+  #   ports:
+  #     - 5433:5432
+  #   container_name: postgres_test
+  neo4j:
+    build: docker/neo4j
+    volumes: 
+      - neo4j_data:/data
+    expose:
+      - 7474
+      - 7473
+      - 7687
+    ports:
+      - 7474:7474
+      - 7473:7473
+      - 7687:7687
+    container_name: neo4j
+  # nodejs:
+  #   build: nodejs
+  #   expose:
+  #     - 8000
+  #     - 8001
+  #   ports:
+  #     - 8000:8000
+  #     - 8001:8001
+  #   container_name: nodejs
