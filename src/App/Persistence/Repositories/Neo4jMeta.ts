@@ -19,11 +19,11 @@ export class Label {
 }
 
 export class Relation {
-  public static readonly SENSE: string = Label.SENSE.toUpperCase();
-  public static readonly SYNSET: string = Label.SYNSET.toUpperCase();
-  public static readonly LANGUAGE: string = Label.LANGUAGE.toUpperCase();
-  public static readonly DEFINITION: string = Label.DEFINITION.toUpperCase();
-  public static readonly EXAMPLE: string = Label.EXAMPLE.toUpperCase();
+  public static readonly SENSE: string = Label.SENSE;
+  public static readonly SYNSET: string = Label.SYNSET;
+  public static readonly LANGUAGE: string = Label.LANGUAGE;
+  public static readonly DEFINITION: string = Label.DEFINITION;
+  public static readonly EXAMPLE: string = Label.EXAMPLE;
 
   private constructor() {}
 }

@@ -1,0 +1,19 @@
+version: '3.1'
+volumes:
+  neo4j_test_data:
+    external:
+      name: dockerlearnittwiceapi_neo4j_test_data
+services:
+  neo4j_test:
+    build: neo4j
+    volumes: 
+      - neo4j_test_data:/data
+    expose:
+      - 7484
+      - 7483
+      - 7697
+    ports:
+      - 7484:7474
+      - 7483:7473
+      - 7697:7687
+    container_name: neo4j_test

@@ -2,9 +2,11 @@ import * as Promise from 'bluebird';
 import { ITask } from 'pg-promise';
 
 import { ILabel } from '../Neo4jMeta';
+import Neo4jConnector from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 
 // FIXME: TFLemmaDAO -> TuLemmaDAO
 export type TFLemmaDAO = ILemmaDAO | undefined;
+export type TLemmaGphDAONodeLabel = ILabel['SENSE'];
 export type TLemmaGphDAORelationLabel = ILabel['SENSE'];
 
 export interface ILemmaKey {
@@ -48,15 +50,18 @@ export interface ILemmaQueries {
 }
 
 export interface ILemmaCommandsGph {
-  createOne(id: ILemmaGphDAO['id']): Promise<ILemmaGphDAO>
-  createOne(id: ILemmaGphDAO['id'], t: any): Promise<ILemmaGphDAO>
+  getConnector(): Neo4jConnector
+
+  createOne(id: ILemmaGphDAO['id']): Promise<ILemmaKey>
+  createOne(id: ILemmaGphDAO['id'], t: any): Promise<ILemmaKey>
 
   createRelationOne(
-    id: ILemmaGphDAO['id'], 
+    lemmaId: ILemmaGphDAO['id'], 
     relationLabel: TLemmaGphDAORelationLabel, 
-    relationId: number,
+    nodeId: number,
+    nodeLabel: TLemmaGphDAONodeLabel,
     t?: any
-  ): Promise<void>
+  ): Promise<boolean>
 
   deleteOne(id: ILemmaGphDAO['id']): Promise<void>
   deleteOne(id: ILemmaGphDAO['id'], t: any): Promise<void>
@@ -64,9 +69,10 @@ export interface ILemmaCommandsGph {
   deleteRelationOne(
     id: ILemmaGphDAO['id'], 
     relationLabel: TLemmaGphDAORelationLabel, 
-    relationId: number,
+    nodeId: number,
+    nodeLabel: TLemmaGphDAONodeLabel,
     t?: any
-  ): Promise<void>
+  ): Promise<boolean>
 }
 
 export interface ILemmaQueriesGph {

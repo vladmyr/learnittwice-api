@@ -2,8 +2,14 @@ import * as Promise from 'bluebird';
 import { CommandsBase } from './CommandsBase';
 import Neo4jConnector from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 import { Label } from 'src/App/Persistence/Repositories/Neo4jMeta';
-import { ILemmaGphDAO, ILemmaCommandsGph, TLemmaGphDAORelationLabel } 
-  from 'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
+import { 
+  ILemmaKey, 
+  ILemmaGphDAO, 
+  ILemmaCommandsGph, 
+  TLemmaGphDAONodeLabel, 
+  TLemmaGphDAORelationLabel 
+} from 'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
+import LemmaGphORM from '../ORM/LemmaGphORM';
 
 class LemmaCommandsGph extends CommandsBase {
   private static CREATE(id: ILemmaGphDAO['id']) {
@@ -11,28 +17,34 @@ class LemmaCommandsGph extends CommandsBase {
   }
 
   private static DELETE(id: ILemmaGphDAO['id']) {
-    return `REMOVE (:${Label.LEMMA} { id: ${id} })`;
+    return `
+      MATCH (lemma:${Label.LEMMA} { id: ${id} })
+      DETACH DELETE lemma
+    `;
   }
 
   private static CREATE_RELATION(
     id: ILemmaGphDAO['id'],
     relationLabel: TLemmaGphDAORelationLabel,
-    relationId: number
+    nodeId: number,
+    nodeLabel: TLemmaGphDAONodeLabel
   ) {
     return `
-      MATCH (lemma:${Label.LEMMA} { id: ${id} }), 
-        (node:${relationLabel} { id: ${relationId} }) 
-      MERGE(lemma)-[relation:${relationLabel}]-(node)
+      MATCH (lemma:${Label.LEMMA} { id: ${id} })
+      MATCH (node:${nodeLabel} { id: ${nodeId} })
+      MERGE (lemma)-[relation:${relationLabel}]-(node)
+      RETURN relation
     `;
   }
 
   private static DELETE_RELATION(
     id: ILemmaGphDAO['id'],
     relationLabel: TLemmaGphDAORelationLabel,
-    relationId: number
+    nodeId: number,
+    nodeLabel: TLemmaGphDAONodeLabel
   ) {
     return `
-      MATCH (:${Label.LEMMA} { id: ${id} })-[relation:${relationLabel}]-(:${relationLabel} { id: ${relationId} }) 
+      MATCH (:${Label.LEMMA} { id: ${id} })-[relation:${relationLabel}]-(:${nodeLabel} { id: ${nodeId} }) 
       DELETE relation
     `;
   }
@@ -54,16 +66,15 @@ class LemmaCommandsGph extends CommandsBase {
   public createOne(
     id: ILemmaGphDAO['id'],
     t?: any
-  ): Promise<ILemmaGphDAO> {
+  ): Promise<ILemmaKey> {
     return this
       ._getScopeOfExecution(t)((session, fulfill, reject) => {
         return session
           .run(LemmaCommandsGph.CREATE(id))
-          .then(fulfill)
+          .then((res) => {
+            return fulfill(new LemmaGphORM(res.records[0].toObject().lemma))
+          })
           .catch(reject)
-      })
-      .catch((err) => {
-        console.error(err);
       })
   }
 
@@ -75,40 +86,48 @@ class LemmaCommandsGph extends CommandsBase {
       ._getScopeOfExecution(t)((session, fulfill, reject) => {
         return session
           .run(LemmaCommandsGph.DELETE(id))
-          .then(fulfill)
+          .then((res) => {
+            return fulfill(res.summary.counters.containsUpdates());
+          })
           .catch(reject)
-      })
-      .catch((err) => {
-        console.error(err);
       })
   }
 
   public createRelationOne(
-    id: ILemmaGphDAO['id'],
-    label: TLemmaGphDAORelationLabel,
-    relationId: number,
+    lemmaId: ILemmaGphDAO['id'],
+    relationLabel: TLemmaGphDAORelationLabel,
+    nodeId: number,
+    nodeLabel: TLemmaGphDAONodeLabel,
     t?: any
-  ): Promise<void> {
+  ): Promise<boolean> {
     return this
       ._getScopeOfExecution(t)((session, fulfill, reject) => {
         return session
-          .run(LemmaCommandsGph.CREATE_RELATION(id, label, relationId))
-          .then(fulfill)
+          .run(LemmaCommandsGph
+            .CREATE_RELATION(lemmaId, relationLabel, nodeId, nodeLabel)
+          )
+          .then((res) => {
+            return fulfill(res.records.length > 0);
+          })
           .catch(reject)
       })
   }
 
   public deleteRelationOne(
     id: ILemmaGphDAO['id'],
-    label: TLemmaGphDAORelationLabel,
-    relationId: number,
+    relationLabel: TLemmaGphDAORelationLabel,
+    nodeId: number,
+    nodeLabel: TLemmaGphDAONodeLabel,
     t?: any
-  ): Promise<void> {
+  ): Promise<boolean> {
     return this
       ._getScopeOfExecution(t)((session, fulfill, reject) => {
         return session
-          .run(LemmaCommandsGph.DELETE_RELATION(id, label, relationId))
-          .then(fulfill)
+          .run(LemmaCommandsGph
+            .DELETE_RELATION(id, relationLabel, nodeId, nodeLabel))
+          .then((res) => {
+            return fulfill(res.summary.counters.containsUpdates());
+          })
           .catch(reject)
       })
   }

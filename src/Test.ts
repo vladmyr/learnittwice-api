@@ -1,39 +1,43 @@
-import * as Promise from 'bluebird';
+import config from 'config';
 import Application from 'src/App/Application';
 import TestDatabaseBuilderPostgres 
   from './Test/Persistence/TestDatabaseBuilderPostgres';
-import TestRunnerPostgres from './Test/Persistence/TestRunnerPostgres';
+import TestDatabaseBuilderNeo4j 
+  from './Test/Persistence/TestDatabaseBuilderNeo4j'
+import TestRunner from './Test/Persistence/TestRunner';
 
-const main = ():void => {
+export enum TEST_SCOPE {
+  POSTGRES,
+  NEO4J
+}
+
+const main = async (scope: TEST_SCOPE) => {
   const application = new Application();
 
-  Promise
-    .resolve()
-    .then(() => {
-      // 1. initialize application
-      return application.initialize();
-    })
-    .then(() => {
-      if (typeof application.dbConnectors.postgresDBConnector == 'undefined') {
-        throw new ReferenceError('[Test] application.dbConnectors are not initialized');
-      }
+  try {
+    await application.initialize()
 
-      // 2. restore default state of test database
-      const testDatabaseBuilderPostgres = TestDatabaseBuilderPostgres
-        .GetInstance(application.dbConnectors.postgresDBConnector.getDB());
-      return testDatabaseBuilderPostgres.import()
-    })
-    .then(() => {
-      // 3. execute test
-      return TestRunnerPostgres.Run();
-    })
-    .then(() => {
-      process.exit(0);
-    })
-    .catch((e) => {
-      console.error(e);
-      process.exit(0);
-    })
+    switch(scope) {
+      case TEST_SCOPE.POSTGRES:
+        const testDatabaseBuilderPostgres = TestDatabaseBuilderPostgres
+          .GetInstance(application.dbConnectors.postgresDBConnector.getDB());
+        await testDatabaseBuilderPostgres.import()
+        await TestRunner
+          .Run(TestRunner.GetTestBaseDir(config.path.persistence.postgres));
+        break;
+      case TEST_SCOPE.NEO4J:
+        const testDatabaseBuilderNeo4j = TestDatabaseBuilderNeo4j
+          .GetInstance(application.dbConnectors.neo4jDBConnector);
+        await testDatabaseBuilderNeo4j.restoreGraph();
+        await TestRunner
+          .Run(TestRunner.GetTestBaseDir(config.path.persistence.neo4j));
+        break;
+    }
+  } catch(err) {
+    console.error(err);
+  } finally {
+    return process.exit(0);
+  }
 }
 
 export default main;

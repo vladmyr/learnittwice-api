@@ -13,7 +13,7 @@ export abstract class CommandQueryBase {
     this._connector = connector;
   }
 
-  protected _getConnector() {
+  public getConnector() {
     return this._connector;
   }
 

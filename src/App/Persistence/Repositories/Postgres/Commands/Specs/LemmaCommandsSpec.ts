@@ -25,7 +25,7 @@ describe('LemmaCommands', () => {
   });
 
   describe('#createMany', () => {
-    it ('creates multile nex lemmas', () => {
+    it ('creates multiple new lemmas', () => {
       const lemmas = [
         'lemma901', 'lemma902', 'lemma903', 'lemma904', 'lemma905', 'lemma906', 
         'lemma907', 'lemma908', 'lemma909', 'lemma910', 'lemma911', 'lemma912', 

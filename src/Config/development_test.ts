@@ -29,16 +29,26 @@ const config = {
         verbose: true,
         dryRun: true
       }
+    },
+    neo4j: {
+      host: '127.0.0.1',
+      port: '7697',
+      user: 'neo4j',
+      password: 'docker',
+      poolSize: 1
     }
   },
   filepath: {
     databaseDump: {
-      postgres: 'src/Test/Persistence/Postgres/Seeds/dump_postgres_test.sql'
+      postgres: 'src/Test/Persistence/Postgres/Seeds/dump_postgres_test.sql',
+      neo4j: 'src/Test/Persistence/Neo4j/Seeds/neo4j_graph_seed.cql'
     }
   },
   path: {
+    app: 'src/App',
     persistence: {
-      postgres: 'src/App/Persistence/Repositories/Postgres'
+      postgres: 'src/App/Persistence/Repositories/Postgres',
+      neo4j: 'src/App/Persistence/Repositories/Neo4j'
     }
   },
   regexMatch: {

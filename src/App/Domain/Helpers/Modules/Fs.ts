@@ -16,13 +16,13 @@ class Fs {
    * @param {Object}  [options]
    * @returns {Promise}
    */
-  public static ReadFile(filePath: string, options: Object): Promise<string> {
+  public static ReadFile(filePath: string, options: Object = {}): Promise<string> {
     options = _.extend({
       encoding: 'utf8'
     }, options);
 
     return Promise.fromCallback((callback) => {
-      fs.readFile(filePath, _.extend({}, options), callback);
+      fs.readFile(filePath, options, callback);
     })
   }
 

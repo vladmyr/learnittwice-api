@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@types/bluebird": "^3.0.35",
+    "@types/commander": "^2.3.31",
     "@types/db-migrate-base": "0.0.3",
     "@types/db-migrate-pg": "0.0.3",
     "@types/knex": "0.0.40",
@@ -16,6 +17,7 @@
     "@types/pg-types": "^1.11.1",
     "@types/underscore": "^1.7.33",
     "bluebird": "^3.4.6",
+    "commander": "^2.9.0",
     "knex": "^0.12.6",
     "mongoose": "^4.6.7",
     "mongoose-deep-populate": "^3.0.0",
@@ -45,6 +47,8 @@
     "watch:tsc": "./node_modules/.bin/tsc -w",
     "start:dev": "node ./bin/development.js",
     "start:test": "node ./bin/development_test.js",
+    "start:test:pg": "node ./bin/development_test.js -s pg",
+    "start:test:n4j": "node ./bin/development_test.js -s n4j",
     "db-migrate:dev": "./node_modules/.bin/db-migrate --env development --migrations-dir ./src/App/Persistence/Repositories/Postgres/Migrations --table __Migrations --",
     "db-migrate:test": "./node_modules/.bin/db-migrate --env development_test --migrations-dir ./src/App/Persistence/Repositories/Postgres/Migrations --table __Migrations --"
   },

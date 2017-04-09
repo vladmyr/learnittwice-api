@@ -5,7 +5,9 @@
             "when": "$(basename).ts"
         },
         "**/*.map": true
+    },
+    "vsicons.presets.angular": false,
+    "search.exclude": {
+        "**/node_modules": true
     }
-,
-"vsicons.presets.angular": false
 }
