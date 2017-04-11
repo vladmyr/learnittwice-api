@@ -34,15 +34,13 @@ const main = ():void => {
     })
     .then(() => {
       return application.dbConnectors.neo4jDBConnector
-        .inSession((session, fulfill, reject) => {
+        .inSession2(async (session) => {
           return Neo4jModels.LemmaCommandsGph.GetInstance()
             .createOne(2, session)
             .then(() => {
               return Neo4jModels.LemmaCommandsGph.GetInstance()
                 .createOne(3, session);
             })
-            .then(fulfill)
-            .catch(reject);
         })
     })
     // .then(() => {

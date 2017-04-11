@@ -1,9 +1,13 @@
 import { v1 as Neo4j } from 'neo4j-driver';
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import Neo4jModels from 'src/App/Persistence/Repositories/Neo4jModels';
 
 export interface IScopeCallback {
-  (session: any, fulfill: (thenableOrResult?: any | Promise.Thenable<any>) => void, reject: (error?: any) => void): void;
+  (session: any, fulfill: (thenableOrResult?: any | Bluebird.Thenable<any>) => void, reject: (error?: any) => void): void;
+}
+
+export interface IScopeCallbackPromise {
+  (session: any): Bluebird<any>
 }
 
 // TODO: add support for transactions
@@ -19,9 +23,6 @@ class Neo4jDBConnector {
   private _driver
   private _freeSessions: number = 0
   private _queueSessionRequest = [];
-
-  // method bindings
-  private _getSessionBound = this._getSession.bind(this);
 
   public constructor(
     host: string,
@@ -53,27 +54,22 @@ class Neo4jDBConnector {
     return this._driver;
   }
 
-  public inSession(callback: IScopeCallback): Promise<any> {
+  public async inSession2<T>(promiseCallback: IScopeCallbackPromise): Promise<T> {
     // 1. receive session and occupy pool slot
     // 2. execute queries
     // 3. close session and free pool slot
-    // ToDo: find better way to resolve all of it
-    return Promise.resolve(this._getSessionBound())
-      .then((session) => {
-        return new Promise((fulfill, reject) => {
-          callback(session, fulfill, reject);
-          return;
-        })
-        .then((result) => {
-          return this
-            ._freeSession(session)
-            .then(() => { return result; });
-        })
-        .catch((err) => {
-          console.error(err);
-          return this._freeSession(session)
-        })
-      });
+    const session = await this._getSession();
+
+    return promiseCallback(session)
+      .then((result) => {
+        return this
+          ._freeSession(session)
+          .then(() => { return result; });
+      })
+      .catch((err) => {
+        console.error(err);
+        return this._freeSession(session)
+      })
   }
 
   private _getSession() {
@@ -83,7 +79,7 @@ class Neo4jDBConnector {
       return this._driver.session();
     }
 
-    return new Promise((fulfill) => {
+    return new Bluebird((fulfill) => {
       // no slots are available - add to queue
       this._queueSessionRequest.push(fulfill);
       return;
@@ -91,7 +87,7 @@ class Neo4jDBConnector {
   }
 
   private _freeSession(session) {
-    const close = Promise.promisify(session.close.bind(session));
+    const close = Bluebird.promisify(session.close.bind(session));
 
     return close().then(() => {
       this._freeSessions++;

@@ -1,9 +1,9 @@
 import * as Promise from 'bluebird';
-import Neo4jDBConnector, { IScopeCallback }
+import Neo4jDBConnector, { IScopeCallbackPromise }
   from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 
-interface IScopeExecution {
-  (callback: IScopeCallback): Promise<any>
+interface IScope {
+  (callback: IScopeCallbackPromise): Promise<any>
 }
 
 export abstract class CommandQueryBase {
@@ -17,18 +17,15 @@ export abstract class CommandQueryBase {
     return this._connector;
   }
 
-  protected _getScopeOfExecution(session?: any): IScopeExecution {
+  protected _getScope(session?: any): IScope {
     if (!session) {
       return (callback) => {
-        return this._connector.inSession(callback);
+        return this._connector.inSession2(callback);
       }
     }
 
     return (callback) => {
-      return new Promise((fulfill, reject) => {
-        callback(session, fulfill, reject);
-        return;
-      })
+      return callback(session);
     }
   }
 }

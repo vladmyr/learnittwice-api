@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import { CommandsBase } from './CommandsBase';
 import Neo4jConnector from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 import { Label } from 'src/App/Persistence/Repositories/Neo4jMeta';
@@ -63,37 +62,29 @@ class LemmaCommandsGph extends CommandsBase {
     return LemmaCommandsGph._instance;
   }
 
-  public createOne(
+  public async createOne(
     id: ILemmaGphDAO['id'],
     t?: any
   ): Promise<ILemmaKey> {
     return this
-      ._getScopeOfExecution(t)((session, fulfill, reject) => {
-        return session
-          .run(LemmaCommandsGph.CREATE(id))
-          .then((res) => {
-            return fulfill(new LemmaGphORM(res.records[0].toObject().lemma))
-          })
-          .catch(reject)
+      ._getScope(t)(async (session) => {
+        const res = await session.run(LemmaCommandsGph.CREATE(id))
+        return new LemmaGphORM(res.records[0].toObject().lemma)
       })
   }
 
-  public deleteOne(
+  public async deleteOne(
     id: ILemmaGphDAO['id'],
     t?: any
-  ): Promise<void> {
+  ): Promise<boolean> {
     return this
-      ._getScopeOfExecution(t)((session, fulfill, reject) => {
-        return session
-          .run(LemmaCommandsGph.DELETE(id))
-          .then((res) => {
-            return fulfill(res.summary.counters.containsUpdates());
-          })
-          .catch(reject)
+      ._getScope(t)(async (session) => {
+        const res = await session.run(LemmaCommandsGph.DELETE(id))
+        return res.summary.counters.containsUpdates();
       })
   }
 
-  public createRelationOne(
+  public async createRelationOne(
     lemmaId: ILemmaGphDAO['id'],
     relationLabel: TLemmaGphDAORelationLabel,
     nodeId: number,
@@ -101,19 +92,15 @@ class LemmaCommandsGph extends CommandsBase {
     t?: any
   ): Promise<boolean> {
     return this
-      ._getScopeOfExecution(t)((session, fulfill, reject) => {
-        return session
-          .run(LemmaCommandsGph
-            .CREATE_RELATION(lemmaId, relationLabel, nodeId, nodeLabel)
-          )
-          .then((res) => {
-            return fulfill(res.records.length > 0);
-          })
-          .catch(reject)
+      ._getScope(t)(async (session) => {
+        const res = await session.run(
+          LemmaCommandsGph.CREATE_RELATION(lemmaId, relationLabel, nodeId, nodeLabel)
+        )
+        return res.summary.counters.containsUpdates();
       })
   }
 
-  public deleteRelationOne(
+  public async deleteRelationOne(
     id: ILemmaGphDAO['id'],
     relationLabel: TLemmaGphDAORelationLabel,
     nodeId: number,
@@ -121,14 +108,11 @@ class LemmaCommandsGph extends CommandsBase {
     t?: any
   ): Promise<boolean> {
     return this
-      ._getScopeOfExecution(t)((session, fulfill, reject) => {
-        return session
-          .run(LemmaCommandsGph
-            .DELETE_RELATION(id, relationLabel, nodeId, nodeLabel))
-          .then((res) => {
-            return fulfill(res.summary.counters.containsUpdates());
-          })
-          .catch(reject)
+      ._getScope(t)(async (session) => {
+        const res = await session.run(
+          LemmaCommandsGph.DELETE_RELATION(id, relationLabel, nodeId, nodeLabel)
+        )
+        return res.summary.counters.containsUpdates();
       })
   }
 }

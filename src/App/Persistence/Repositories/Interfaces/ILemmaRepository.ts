@@ -63,8 +63,8 @@ export interface ILemmaCommandsGph {
     t?: any
   ): Promise<boolean>
 
-  deleteOne(id: ILemmaGphDAO['id']): Promise<void>
-  deleteOne(id: ILemmaGphDAO['id'], t: any): Promise<void>
+  deleteOne(id: ILemmaGphDAO['id']): Promise<boolean>
+  deleteOne(id: ILemmaGphDAO['id'], t: any): Promise<boolean>
 
   deleteRelationOne(
     id: ILemmaGphDAO['id'], 

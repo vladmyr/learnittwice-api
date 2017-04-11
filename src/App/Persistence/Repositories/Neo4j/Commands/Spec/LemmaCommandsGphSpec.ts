@@ -6,70 +6,66 @@ const connector = lemmaCommandsGph.getConnector();
 
 describe('LemmaCommandsGph', () => {
   describe('#createOne', () => {
-    it('creates new lemma', (done) => {
+    it('creates new lemma', () => {
       const lemmaId = 1001;
       
-      connector.inSession(async (session, fulfill, reject) => {
+      return connector.inSession2(async (session) => {
         const tx = session.beginTransaction();
 
         try {
           const savedNode = await lemmaCommandsGph.createOne(lemmaId, tx);
           assert.equal(savedNode.id, lemmaId);
 
-          await tx.rollback();
-          return fulfill();
+          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
 
-          await tx.rollback();
-          return reject(err);
+          return tx.rollback();
         }
-      }).then(done);
+      })
     })
   })
 
   describe('#deleteOne', () => {
-    it('deletes newly created lemma', (done) => {
+    it('deletes newly created lemma', () => {
       const lemmaId = 1001;
 
-      connector.inSession(async (session, fulfill, reject) => {
+      return connector.inSession2(async (session) => {
         const tx = session.beginTransaction();
 
         try {
           const savedLemma = await lemmaCommandsGph.createOne(lemmaId, tx);
           assert.equal(savedLemma.id, lemmaId);
 
-          await lemmaCommandsGph.deleteOne(savedLemma.id, tx);
-          await tx.rollback();
+          const hasUpdates = await lemmaCommandsGph.deleteOne(savedLemma.id, tx);
+          assert.equal(hasUpdates, true);
 
-          return fulfill();
+          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
 
-          await tx.rollback();
-          return reject(err);
+          return tx.rollback();
         }
-      }).then(done);
+      });
     })
 
-    it('deletes non existing lemma silently', (done) => {
+    it('deletes non existing lemma silently', () => {
       const lemmaId = 1001;
 
-      connector.inSession(async (session, fulfill, reject) => {
+      return connector.inSession2(async (session) => {
         const tx = session.beginTransaction();
 
         try {
-          await lemmaCommandsGph.deleteOne(lemmaId, tx);
-          await tx.rollback();
+          const hasDeleted = await lemmaCommandsGph.deleteOne(lemmaId, tx);
+          assert.equal(hasDeleted, false);
 
-          return fulfill()
+          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
 
-          await tx.rollback();
-          return reject(err);
+          return tx.rollback();
         }
-      }).then(done);
+      })
     })
   });
 
@@ -80,23 +76,21 @@ describe('LemmaCommandsGph', () => {
       const relationLabel = 'Sense';
       const nodeLabel = 'Sense';
 
-      return connector.inSession(async (session, fulfill, reject) => {
+      return connector.inSession2(async (session) => {
         const tx = session.beginTransaction();
 
         try {
           const savedLemma = await lemmaCommandsGph.createOne(lemmaId, tx);
           const hasCreated = await lemmaCommandsGph
             .createRelationOne(savedLemma.id, relationLabel, senseId, nodeLabel, tx);
-          await tx.rollback();
-
+          
           assert.equal(hasCreated, true);
-            
-          return fulfill();
+
+          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
 
-          await tx.rollback();
-          return reject(err);
+          return tx.rollback();
         }
       });
     })
@@ -109,7 +103,7 @@ describe('LemmaCommandsGph', () => {
       const relationLabel = 'Sense';
       const nodeLabel = 'Sense';
 
-      return connector.inSession(async (session, fulfill, reject) => {
+      return connector.inSession2(async (session) => {
         const tx = session.beginTransaction();
 
         try {
@@ -124,13 +118,11 @@ describe('LemmaCommandsGph', () => {
 
           assert.equal(hasDeleted, true);
 
-          await tx.rollback();
-          return fulfill();
+          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
 
-          await tx.rollback();
-          return reject(err);
+          return tx.rollback();
         }
       });
     })

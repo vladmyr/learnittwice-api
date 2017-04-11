@@ -33,22 +33,17 @@ class TestDatabaseBuilderNeo4j {
   }
 
   private async _dropGraph(): Promise<void> {
-    return this._dbConnector.inSession((session, fulfill, reject) => {
+    return this._dbConnector.inSession2<void>((session) => {
       return session
         .run(TestDatabaseBuilderNeo4j.QUERY_DROP_GRAPH)
-        .then(fulfill)
-        .catch(reject)
     })
   }
 
   private async _seedGraph(): Promise<void> {
     const graphSeed: string = await Fs.ReadFile(FILEPATH_GRAPH_SEED);
 
-    return this._dbConnector.inSession((session, fulfill, reject) => {
-      return session
-        .run(graphSeed)
-        .then(fulfill)
-        .catch(reject)
+    return this._dbConnector.inSession2<void>(async (session) => {
+      return session.run(graphSeed);
     })
   }
 }
