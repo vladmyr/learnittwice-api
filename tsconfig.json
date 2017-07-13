@@ -1,9 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "types": [
-      "bluebird-global"
-    ],
+    "baseUrl": "./",
     "rootDir": "./",
     "outDir": "./",
     "module": "commonjs",
@@ -18,7 +16,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "removeComments": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "paths": {
+      "src/*": ["./src/*"]
+    }
   },
   "include": [
     "./bin",

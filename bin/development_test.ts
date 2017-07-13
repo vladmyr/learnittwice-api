@@ -1,19 +1,17 @@
-import * as program from 'commander';
+import 'app-module-path/cwd';
+console.log(process.cwd());
 
 process.env.NODE_ENV = 'development_test';
-process.env.NODE_CONFIG_DIR = 'src/Config';
+process.env.NODE_CONFIG_DIR = './src/Config';
 
+import * as program from 'commander';
 import main, { TEST_SCOPE } from 'src/Test';
-
-interface ITestCLI extends program.ICommand {
-  scope?: string
-}
 
 program
   .option('-h, --help', 'Prints help')
   .option('-s, --scope <scope>', 'Scope of testing', /^(pg|n4j)$/i);
 
-const cli: ITestCLI = program.parse(process.argv)
+const cli = program.parse(process.argv)
 
 if (cli.scope) {
   switch (cli.scope) {
