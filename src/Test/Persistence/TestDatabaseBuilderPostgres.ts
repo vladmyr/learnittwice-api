@@ -28,10 +28,9 @@ class TestDatabaseBuilderPostgres {
     return TestDatabaseBuilderPostgres._instance;
   }
 
-  public import(): Promise<void> {
-    return Promise.resolve()
-      .then(this.truncateAllTables.bind(this))
-      .then(this.restoreDump.bind(this))
+  public async import(): Promise<void> {
+    await this.truncateAllTables();
+    await this.restoreDump();
   }
 
   private truncateAllTables(): Promise<any> {

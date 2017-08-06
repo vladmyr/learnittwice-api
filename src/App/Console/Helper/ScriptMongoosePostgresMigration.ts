@@ -276,8 +276,7 @@ export class ScriptMongoosePostgresMigration {
     for(; i < chunkTotal; i++) {
       yield this._FindMongooseLemma(i * chunkSize, chunkSize)
         .then((lemmas) => {
-          const mappedLemmas: string[] = lemmas.map(lemma => lemma.lemma);
-          return this._LemmaCommands.createMany(mappedLemmas);
+          return this._LemmaCommands.createMany(lemmas);
         })
         .then((lemmas) => {
           this._LemmaProcessed += lemmas.length;

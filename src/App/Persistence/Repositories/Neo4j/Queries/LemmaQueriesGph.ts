@@ -1,26 +1,16 @@
-import * as Promise from 'bluebird';
-import { QueriesBase } from './QueriesBase';
+import { AbstractQueriesGph } from './AbstractQueriesGph';
 import Neo4jConnector from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 import { Label } from 'src/App/Persistence/Repositories/Neo4jMeta';
-import { ILemmaGphDAO, ILemmaQueriesGph, TLemmaGphDAORelationLabel } 
+import { ILemmaQueriesGph, TuLemmaGphDAO } 
   from 'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
 
-class LemmaQueriesGph extends QueriesBase {
-  private static _instance: ILemmaQueriesGph;
+class LemmaQueriesGph extends AbstractQueriesGph<TuLemmaGphDAO> {
+  protected static LabelNode = Label.LEMMA;
+  protected static Instance: ILemmaQueriesGph;
   
   public static GetInstance(connector?: Neo4jConnector): ILemmaQueriesGph {
-    if (!LemmaQueriesGph._instance) {
-      if (typeof connector == 'undefined') {
-        throw new TypeError('[LemmaQueriesGph] argument `connector` can\'t be undefined during instantiation');
-      }
-
-      LemmaQueriesGph._instance = new LemmaQueriesGph(connector);
-    }
-
-    return LemmaQueriesGph._instance;
+    return super.GetInstance(connector, LemmaQueriesGph)
   }
-
-  
 }
 
 export default LemmaQueriesGph;

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as P from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as Mocha from 'mocha';
 import config from 'config';
 import { Fs } from 'src/App/Domain/Helpers/Util';
@@ -23,7 +23,7 @@ class TestRunner {
 
     list.forEach(mocha.addFile.bind(mocha));
 
-    return P.fromCallback((resolver) => {
+    return Bluebird.fromCallback((resolver) => {
       return mocha.run(resolver);
     });
   }

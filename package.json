@@ -2,7 +2,7 @@
   "name": "learnittwice-api",
   "version": "0.0.1",
   "description": "API webserver for LearnItTwice project",
-  "main": "src/index.ts",
+  "main": "src/Main.js",
   "dependencies": {
     "@types/bluebird": "^3.0.35",
     "@types/db-migrate-base": "0.0.3",
@@ -40,17 +40,20 @@
     "db-migrate": "^0.10.0-beta.20",
     "db-migrate-pg": "^0.1.11",
     "mocha": "^3.2.0",
+    "progress": "^2.0.0",
     "typescript": "^2.1.4"
   },
   "scripts": {
     "build:tsc": "./node_modules/.bin/tsc",
     "watch:tsc": "./node_modules/.bin/tsc -w",
-    "start:dev": "node ./bin/development.js",
-    "start:test": "node ./bin/development_test.js",
-    "start:test:pg": "node ./bin/development_test.js -s pg",
-    "start:test:n4j": "node ./bin/development_test.js -s n4j",
+    "start:dev": "node ./bin/dev_app.js",
+    "start:test": "node ./bin/dev_test.js",
+    "start:test:pg": "node ./bin/dev_test.js -s pg",
+    "start:test:n4j": "node ./bin/dev_test.js -s n4j",
     "db-migrate:dev": "./node_modules/.bin/db-migrate --env development --migrations-dir ./src/App/Persistence/Repositories/Postgres/Migrations --table __Migrations --",
-    "db-migrate:test": "./node_modules/.bin/db-migrate --env development_test --migrations-dir ./src/App/Persistence/Repositories/Postgres/Migrations --table __Migrations --"
+    "db-migrate:test": "./node_modules/.bin/db-migrate --env development_test --migrations-dir ./src/App/Persistence/Repositories/Postgres/Migrations --table __Migrations --",
+    "cli:test": "node ./bin/dev_test_cli.js --",
+    "cli:dev": "node ./bin/dev_app_cli.js --"
   },
   "author": "Volodymyr Khytskyi",
   "license": "MIT"

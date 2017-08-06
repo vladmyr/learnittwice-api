@@ -24,10 +24,14 @@ up-pg-test:
 	docker-compose -f $(FILEPATH_PG_TEST) up -d
 down-pg-test:
 	docker-compose -f $(FILEPATH_PG_TEST) down
+ps-pg-test:
+	docker-compose -f $(FILEPATH_PG_TEST) ps
 up-n4j-test:
 	docker-compose -f $(FILEPATH_NEO4J_TEST) up -d
 down-n4j-test:
 	docker-compose -f $(FILEPATH_NEO4J_TEST) down
+ps-n4j-test:
+	docker-compose -f $(FILEPATH_NEO4J_TEST) ps
 
 # accumulative
 up-all:

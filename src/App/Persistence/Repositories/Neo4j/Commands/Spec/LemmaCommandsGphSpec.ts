@@ -15,11 +15,9 @@ describe('LemmaCommandsGph', () => {
         try {
           const savedNode = await lemmaCommandsGph.createOne(lemmaId, tx);
           assert.equal(savedNode.id, lemmaId);
-
-          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
-
+        } finally {
           return tx.rollback();
         }
       })
@@ -39,11 +37,9 @@ describe('LemmaCommandsGph', () => {
 
           const hasUpdates = await lemmaCommandsGph.deleteOne(savedLemma.id, tx);
           assert.equal(hasUpdates, true);
-
-          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
-
+        } finally {
           return tx.rollback();
         }
       });
@@ -58,11 +54,9 @@ describe('LemmaCommandsGph', () => {
         try {
           const hasDeleted = await lemmaCommandsGph.deleteOne(lemmaId, tx);
           assert.equal(hasDeleted, false);
-
-          return tx.rollback();
         } catch (err) {
           assert.ifError(err);
-
+        } finally {
           return tx.rollback();
         }
       })

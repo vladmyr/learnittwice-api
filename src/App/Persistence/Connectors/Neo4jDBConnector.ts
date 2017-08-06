@@ -2,12 +2,8 @@ import { v1 as Neo4j } from 'neo4j-driver';
 import * as Bluebird from 'bluebird';
 import Neo4jModels from 'src/App/Persistence/Repositories/Neo4jModels';
 
-export interface IScopeCallback {
-  (session: any, fulfill: (thenableOrResult?: any | Bluebird.Thenable<any>) => void, reject: (error?: any) => void): void;
-}
-
 export interface IScopeCallbackPromise {
-  (session: any): Bluebird<any>
+  (session: any): Promise<any>
 }
 
 // TODO: add support for transactions

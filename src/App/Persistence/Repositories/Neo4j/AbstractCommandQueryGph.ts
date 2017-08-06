@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import Neo4jDBConnector, { IScopeCallbackPromise }
   from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 
@@ -6,7 +5,7 @@ interface IScope {
   (callback: IScopeCallbackPromise): Promise<any>
 }
 
-export abstract class CommandQueryBase {
+export abstract class AbstractCommandQueryGph {
   private _connector: Neo4jDBConnector;
 
   constructor(connector: Neo4jDBConnector) {

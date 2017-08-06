@@ -1,7 +1,7 @@
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import { IDatabase, ITask } from 'pg-promise';
 import { TableName } from 'src/App/Persistence/Repositories/PostgresMeta';
-import { TFLemmaDAO, ILemmaDAO, ILemmaCommands } from 
+import { TFLemmaDAO, ILemmaDAO, ILemmaProps, ILemmaCommands } from 
   'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
 import { CommandsBase } from './CommandsBase';
 import ArrayUtil from 'src/App/Domain/Helpers/Modules/Array';
@@ -20,7 +20,7 @@ class LemmaCommands extends CommandsBase {
     super(db);
   }
 
-  public static GetInstance(db?:IDatabase<{}>):ILemmaCommands {
+  public static GetInstance(db?: IDatabase<{}>): ILemmaCommands {
     if (!LemmaCommands._instance) {
       if (typeof db == 'undefined') {
         throw new TypeError('[LemmaCommands.GetInstance] argument `db` can\'t be undefined during instantiation')
@@ -33,38 +33,31 @@ class LemmaCommands extends CommandsBase {
   }
 
   public createOne(
-    lemma: ILemmaDAO['lemma'], 
-    t: ITask<{}> = undefined
+    props: ILemmaProps, 
+    t?: ITask<{}>
   ): Promise<ILemmaDAO> {
     return this._getScopeOfExecution(t)
-      .one(LemmaCommands.COMMAND_CREATE, {
-        lemma
-      })
+      .one(LemmaCommands.COMMAND_CREATE, props)
       .then((data: ILemmaDAO) => {
         return data;
       })
   }
 
-  public createMany(
-    lemmas: ILemmaDAO['lemma'][], 
-    t: ITask<{}> = undefined
+  public async createMany(
+    lstProps: ILemmaProps[], 
+    t?: ITask<{}>
   ): Promise<ILemmaDAO[]> {
-    const mappedLemmas = lemmas.map<{ lemma: string }>((lemma) => {
-      return { lemma };
-    });
-    const chunks = ArrayUtil.Chunk<{ lemma: string }>(mappedLemmas, this._INSERT_CHUNK_SIZE);
+    const chunks = ArrayUtil.Chunk<ILemmaProps>(lstProps, this._INSERT_CHUNK_SIZE);
     
-    return Promise
-      .map(chunks, (chunk) => {
-        return this._getScopeOfExecution(t)
-          .many(
-            this._knex(TableName.LEMMA)
-              .insert(chunk, '*')
-              .toString()
-          )
-          .then((data: ILemmaDAO[] = []) => {
-            return data;
-          })
+    return await Bluebird
+      .map(chunks, async (chunk) => {
+        const executionScope = this._getScopeOfExecution(t);
+
+        return await executionScope.many(
+          this._knex(TableName.LEMMA)
+            .insert(chunk, '*')
+            .toString()
+        )
       }, { concurrency: 1 })
       .then((data: ILemmaDAO[][] = []) => {
         return [].concat.apply([], data);
@@ -72,21 +65,21 @@ class LemmaCommands extends CommandsBase {
   }
 
   public updateOne(
-    id: ILemmaDAO['id'], 
-    lemma: ILemmaDAO['lemma'], 
-    t: ITask<{}> = undefined
+    id: number, 
+    props: ILemmaProps, 
+    t?: ITask<{}>
   ): Promise<TFLemmaDAO> {
     return this._getScopeOfExecution(t)
       .one(LemmaCommands.COMMAND_UPDATE, {
         id,
-        lemma
+        lemma: props.lemma
       })
       .then((data:TFLemmaDAO) => {
         return data;
       })
   }
 
-  public deleteOne(id: ILemmaDAO['id'], t: ITask<{}> = undefined): Promise<void> {
+  public deleteOne(id: number, t?: ITask<{}>): Promise<void> {
     return this._getScopeOfExecution(t)
       .none(LemmaCommands.COMMAND_DELETE, { 
         id 

@@ -35,7 +35,7 @@ class TestDatabaseBuilderNeo4j {
   private async _dropGraph(): Promise<void> {
     return this._dbConnector.inSession2<void>((session) => {
       return session
-        .run(TestDatabaseBuilderNeo4j.QUERY_DROP_GRAPH)
+        .run(TestDatabaseBuilderNeo4j.QUERY_DROP_GRAPH);
     })
   }
 

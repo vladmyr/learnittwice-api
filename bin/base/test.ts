@@ -1,5 +1,4 @@
 import 'app-module-path/cwd';
-console.log(process.cwd());
 
 process.env.NODE_ENV = 'development_test';
 process.env.NODE_CONFIG_DIR = './src/Config';

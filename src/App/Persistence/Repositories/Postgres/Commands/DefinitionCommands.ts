@@ -34,7 +34,7 @@ class DefinitionCommands {
 
   public createOne(
     props: IDefinitionProps,
-    t: ITask<{}> = undefined
+    t?: ITask<{}>
   ): Promise<TuDefinitionDAO> {
     return this._getScopeOfExecution(t)
       .one(DefinitionCommands.COMMAND_CREATE, {

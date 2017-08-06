@@ -10,19 +10,35 @@ import * as path from 'path';
 // }
 
 class Fs {
+  
+  /**
+   * Create a file in a given filepath
+   * 
+   * @static
+   * @param {string} filePath 
+   * @param {(string | Buffer)} [content=Buffer.alloc(0)] 
+   * @returns {Promise<void>} 
+   * 
+   * @memberOf Fs
+   */
+  public static Touch(filePath: string, content: string | Buffer = Buffer.alloc(0)): Promise<void> {
+    return Promise.fromCallback((callback) => {
+      return fs.writeFile(filePath, content, callback);
+    })
+  }
+
   /**
    * Read whole file
+   * 
    * @param {String}  filePath
    * @param {Object}  [options]
    * @returns {Promise}
    */
-  public static ReadFile(filePath: string, options: Object = {}): Promise<string> {
-    options = _.extend({
-      encoding: 'utf8'
-    }, options);
+  public static ReadFile(filePath: string, options: {} = {}): Promise<string> {
+    options = _.extend({ encoding: 'utf8' }, options);
 
     return Promise.fromCallback((callback) => {
-      fs.readFile(filePath, options, callback);
+      return fs.readFile(filePath, options, callback);
     })
   }
 
@@ -84,19 +100,19 @@ class Fs {
    * @param   {String}  dir
    * @returns {Promise}
    */
-  public static Mkdir (dir:string): Promise<Object>{
+  public static Mkdir (dir: string): Promise<{}>{
     return new Promise((fulfill, reject) => {
       fs.mkdir(dir, function(err){
         if(!err || err.code === "EEXIST"){
           return fulfill();
-        }else{
-          return reject();
+        } else {
+          return reject(err);
         }
       });
     });
   }
 
-  public static ReaddirRecursively(dir: string) /*: Promise<string[]> */ {
+  public static ReaddirRecursively(dir: string): Promise<string[]> {
     return Promise.fromCallback((resolver) => {
       return fs.readdir(dir, resolver);
     })

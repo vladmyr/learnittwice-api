@@ -13,7 +13,7 @@ describe('LemmaCommands', () => {
       const lemma = 'lemma101';
       return Postgres.ResolveTest(db.tx((t) => {
         return lemmaCommands
-          .createOne(lemma, t)
+          .createOne({ lemma }, t)
           .then((savedLemma) => {
             assert.equal(typeof savedLemma.id, 'number');
             assert.equal(savedLemma.lemma, lemma);
@@ -27,18 +27,18 @@ describe('LemmaCommands', () => {
   describe('#createMany', () => {
     it ('creates multiple new lemmas', () => {
       const lemmas = [
-        'lemma901', 'lemma902', 'lemma903', 'lemma904', 'lemma905', 'lemma906', 
-        'lemma907', 'lemma908', 'lemma909', 'lemma910', 'lemma911', 'lemma912', 
-        'lemma913', 'lemma914', 'lemma915', 'lemma916', 'lemma917', 'lemma918', 
-        'lemma919', 'lemma920', 'lemma921', 'lemma922', 'lemma923', 'lemma924', 
-        'lemma925', 'lemma926', 'lemma927', 'lemma928', 'lemma929', 'lemma930', 
-        'lemma931', 'lemma932', 'lemma933', 'lemma934', 'lemma935', 'lemma936', 
-        'lemma937', 'lemma938', 'lemma939', 'lemma940', 'lemma941', 'lemma942', 
-        'lemma943', 'lemma944', 'lemma945', 'lemma946', 'lemma947', 'lemma948', 
-        'lemma949', 'lemma950', 'lemma951', 'lemma952', 'lemma953', 'lemma954', 
-        'lemma955', 'lemma956', 'lemma957', 'lemma958', 'lemma959', 'lemma960', 
-        'lemma961', 'lemma962', 'lemma963', 'lemma964', 'lemma965', 'lemma966', 
-        'lemma967', 'lemma968'
+        { lemma: 'lemma901' }, { lemma: 'lemma902' }, { lemma: 'lemma903' }, { lemma: 'lemma904' }, { lemma: 'lemma905' }, { lemma: 'lemma906' }, 
+        { lemma: 'lemma907' }, { lemma: 'lemma908' }, { lemma: 'lemma909' }, { lemma: 'lemma910' }, { lemma: 'lemma911' }, { lemma: 'lemma912' }, 
+        { lemma: 'lemma913' }, { lemma: 'lemma914' }, { lemma: 'lemma915' }, { lemma: 'lemma916' }, { lemma: 'lemma917' }, { lemma: 'lemma918' }, 
+        { lemma: 'lemma919' }, { lemma: 'lemma920' }, { lemma: 'lemma921' }, { lemma: 'lemma922' }, { lemma: 'lemma923' }, { lemma: 'lemma924' }, 
+        { lemma: 'lemma925' }, { lemma: 'lemma926' }, { lemma: 'lemma927' }, { lemma: 'lemma928' }, { lemma: 'lemma929' }, { lemma: 'lemma930' }, 
+        { lemma: 'lemma931' }, { lemma: 'lemma932' }, { lemma: 'lemma933' }, { lemma: 'lemma934' }, { lemma: 'lemma935' }, { lemma: 'lemma936' }, 
+        { lemma: 'lemma937' }, { lemma: 'lemma938' }, { lemma: 'lemma939' }, { lemma: 'lemma940' }, { lemma: 'lemma941' }, { lemma: 'lemma942' }, 
+        { lemma: 'lemma943' }, { lemma: 'lemma944' }, { lemma: 'lemma945' }, { lemma: 'lemma946' }, { lemma: 'lemma947' }, { lemma: 'lemma948' }, 
+        { lemma: 'lemma949' }, { lemma: 'lemma950' }, { lemma: 'lemma951' }, { lemma: 'lemma952' }, { lemma: 'lemma953' }, { lemma: 'lemma954' }, 
+        { lemma: 'lemma955' }, { lemma: 'lemma956' }, { lemma: 'lemma957' }, { lemma: 'lemma958' }, { lemma: 'lemma959' }, { lemma: 'lemma960' }, 
+        { lemma: 'lemma961' }, { lemma: 'lemma962' }, { lemma: 'lemma963' }, { lemma: 'lemma964' }, { lemma: 'lemma965' }, { lemma: 'lemma966' }, 
+        { lemma: 'lemma967' }, { lemma: 'lemma968' }
       ];
 
       return Postgres.ResolveTest(db.tx((t) => {
@@ -62,7 +62,7 @@ describe('LemmaCommands', () => {
 
       return Postgres.ResolveTest(db.tx((t) => {
         return lemmaCommands
-          .updateOne(expectedLemma.id, expectedLemma.lemma, t)
+          .updateOne(expectedLemma.id, { lemma: expectedLemma.lemma }, t)
           .then((updatedLemma) => {
             assert.deepEqual(updatedLemma, expectedLemma);
 
@@ -79,7 +79,7 @@ describe('LemmaCommands', () => {
 
       return db.tx((t) => {
         return lemmaCommands
-          .updateOne(expectedLemma.id, expectedLemma.lemma, t)
+          .updateOne(expectedLemma.id, { lemma: expectedLemma.lemma }, t)
       })
       .catch((err) => {
         assert.equal(err.code, errors.queryResultErrorCode.noData);

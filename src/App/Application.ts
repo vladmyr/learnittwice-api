@@ -12,6 +12,7 @@ interface CollectionDBConnector {
 }
 
 class Application {
+  public config = config;
   public express;
   public services;
   public dbConnectors: CollectionDBConnector = {};

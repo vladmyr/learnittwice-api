@@ -23,7 +23,7 @@ const config = {
       ssl: false, // ToDo: true
       schemaMigrations: {
         driver: 'pg',
-        migrationsDir: '/src/App/Persistence/Repositories/Postgres/Migrations',
+        migrationsDir: 'src/App/Persistence/Repositories/Postgres/Migrations',
         schema: '_SchemaVersion',
         migrationTable: '_SchemaVersion',
         verbose: true,
@@ -36,6 +36,10 @@ const config = {
       user: 'neo4j',
       password: 'docker',
       poolSize: 1
+    },
+    neo4jMigrations: {
+      path: 'src/App/Persistence/Repositories/Neo4j/Migrations',
+      nodeLabel: 'MigrationVersion'
     }
   },
   filepath: {

@@ -4,12 +4,11 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "type": "node",
             "request": "launch",
             "name": "Start",
-            "program": "${workspaceRoot}/bin/development.js",
+            "program": "${workspaceRoot}/bin/dev_app.js",
             "cwd": "${workspaceRoot}",
             "console": "internalConsole",
             "sourceMaps": true
@@ -17,8 +16,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "test:n4j",
-            "program": "${workspaceRoot}/bin/development_test.js",
+            "name": "start:test:n4j",
+            "program": "${workspaceRoot}/bin/dev_test.js",
             "args": ["-s", "n4j"],
             "cwd": "${workspaceRoot}",
             "console": "internalConsole",
@@ -27,8 +26,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "test:pg",
-            "program": "${workspaceRoot}/bin/development_test.js",
+            "name": "start:test:pg",
+            "program": "${workspaceRoot}/bin/dev_test.js",
             "args": ["-s", "pg"],
             "cwd": "${workspaceRoot}",
             "console": "internalConsole",
@@ -37,8 +36,51 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "CLI",
-            "program": "${workspaceRoot}/bin/development_cli.js",
+            "name": "cli:test pg2n4jmap",
+            "program": "${workspaceRoot}/bin/dev_test_cli.js",
+            "args": ["pg2n4jmap"],
+            "cwd": "${workspaceRoot}",
+            "console": "internalConsole",
+            "sourceMaps": true
+        },
+
+        // cli:test n4jmigrate
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cli:test n4jmigrate create",
+            "program": "${workspaceRoot}/bin/dev_test_cli.js",
+            "args": ["n4jmigrate", "create", "-n", "indexes"],
+            "cwd": "${workspaceRoot}",
+            "console": "internalConsole",
+            "sourceMaps": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cli:test n4j-migrate up",
+            "program": "${workspaceRoot}/bin/dev_test_cli.js",
+            "args": ["n4jmigrate", "up"],
+            "cwd": "${workspaceRoot}",
+            "console": "internalConsole",
+            "sourceMaps": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cli:test n4j-migrate down",
+            "program": "${workspaceRoot}/bin/dev_test_cli.js",
+            "args": ["n4jmigrate", "down"],
+            "cwd": "${workspaceRoot}",
+            "console": "internalConsole",
+            "sourceMaps": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cli:test pg-neo-sync",
+            "program": "${workspaceRoot}/bin/dev_test_cli.js",
+            "args": ["pg-neo-sync"],
             "cwd": "${workspaceRoot}",
             "console": "internalConsole",
             "sourceMaps": true

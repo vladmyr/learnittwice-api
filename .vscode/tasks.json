@@ -11,8 +11,7 @@
     "problemMatcher": "$tsc",
     "isBuildCommand": true,
     "args": ["run", "build:tsc"]
-  }],
-  "tasks": [{
+  }, {
     "taskName": "watch:tsc",
     "problemMatcher": "$tsc",
     "isBuildCommand": true,

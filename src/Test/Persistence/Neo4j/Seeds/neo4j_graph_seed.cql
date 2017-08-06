@@ -17,7 +17,7 @@ CREATE (vehicleSense: Sense { id: 14 })
 // Synsets
 CREATE (beeSynset: Synset { id: 21 })
 CREATE (carVehicleSynset: Synset { id: 22 })
-CREATE (treeSynset: Synset { id: 22 })
+CREATE (treeSynset: Synset { id: 23 })
 
 // Languages
 CREATE (enGBLng: Language { id: 101 })
