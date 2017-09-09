@@ -3,44 +3,19 @@ import { IDatabase, ITask } from 'pg-promise';
 import { TableName } from 'src/App/Persistence/Repositories/PostgresMeta';
 import { TFLemmaDAO, ILemmaDAO, ILemmaProps, ILemmaCommands } from 
   'src/App/Persistence/Repositories/Interfaces/ILemmaRepository';
-import { CommandsBase } from './CommandsBase';
+import AbstractCommands from './AbstractCommands';
 import ArrayUtil from 'src/App/Domain/Helpers/Modules/Array';
 
-class LemmaCommands extends CommandsBase {
-  public static readonly COMMAND_CREATE =
-    `INSERT INTO "${TableName.LEMMA}" (lemma) VALUES($(lemma)) RETURNING *`;
-  public static readonly COMMAND_UPDATE =
-    `UPDATE "${TableName.LEMMA}" SET lemma = $(lemma) WHERE id = $(id) RETURNING *`;
-  public static readonly COMMAND_DELETE =
-    `DELETE FROM "${TableName.LEMMA}" WHERE id = $(id)`;
-
-  private static _instance:ILemmaCommands;
+class LemmaCommands extends AbstractCommands<ILemmaProps, TFLemmaDAO> {
+  protected static readonly TableName = TableName.LEMMA;
+  protected static Instance: ILemmaCommands;
 
   private constructor(db:IDatabase<{}>) {
     super(db);
   }
 
   public static GetInstance(db?: IDatabase<{}>): ILemmaCommands {
-    if (!LemmaCommands._instance) {
-      if (typeof db == 'undefined') {
-        throw new TypeError('[LemmaCommands.GetInstance] argument `db` can\'t be undefined during instantiation')
-      }
-
-      LemmaCommands._instance = new LemmaCommands(db);
-    }
-
-    return LemmaCommands._instance;
-  }
-
-  public createOne(
-    props: ILemmaProps, 
-    t?: ITask<{}>
-  ): Promise<ILemmaDAO> {
-    return this._getScopeOfExecution(t)
-      .one(LemmaCommands.COMMAND_CREATE, props)
-      .then((data: ILemmaDAO) => {
-        return data;
-      })
+    return super.GetInstance(db, LemmaCommands);
   }
 
   public async createMany(
@@ -61,28 +36,6 @@ class LemmaCommands extends CommandsBase {
       }, { concurrency: 1 })
       .then((data: ILemmaDAO[][] = []) => {
         return [].concat.apply([], data);
-      })
-  }
-
-  public updateOne(
-    id: number, 
-    props: ILemmaProps, 
-    t?: ITask<{}>
-  ): Promise<TFLemmaDAO> {
-    return this._getScopeOfExecution(t)
-      .one(LemmaCommands.COMMAND_UPDATE, {
-        id,
-        lemma: props.lemma
-      })
-      .then((data:TFLemmaDAO) => {
-        return data;
-      })
-  }
-
-  public deleteOne(id: number, t?: ITask<{}>): Promise<void> {
-    return this._getScopeOfExecution(t)
-      .none(LemmaCommands.COMMAND_DELETE, { 
-        id 
       })
   }
 }
