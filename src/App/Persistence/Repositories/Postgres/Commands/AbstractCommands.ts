@@ -7,6 +7,8 @@ import { CommandQueryBase } from '../CommandQueryBase';
 export default abstract class AbstractCommands<TProps, TDAO> 
   extends CommandQueryBase {
 
+  protected readonly _INSERT_CHUNK_SIZE = 50;
+
   protected static readonly TableName: string;
   protected static Instance;
 

@@ -1,4 +1,9 @@
 const config = {
+  server: {
+    api: {
+      port:8090
+    }
+  },
   database: {
     mongodb: {
       uri: 'mongodb://127.0.0.1:27017/learnittwicev2',
