@@ -5,6 +5,9 @@ import MongooseDBConnector from 'src/App/Persistence/Connectors/MongooseDBConnec
 import PostgresDBConnector from 'src/App/Persistence/Connectors/PostgresDBConnector';
 import Neo4jDBConnector from 'src/App/Persistence/Connectors/Neo4jDBConnector';
 
+import HttpServerInitializer
+  from 'src/App/Controllers/Initializer/HttpServerInitializer';
+
 interface CollectionDBConnector {
   mongooseDBConnector?: MongooseDBConnector;
   postgresDBConnector?: PostgresDBConnector;
@@ -13,8 +16,6 @@ interface CollectionDBConnector {
 
 class Application {
   public config = config;
-  public express;
-  public services;
   public dbConnectors: CollectionDBConnector = {};
 
   public constructor() {}
@@ -67,6 +68,13 @@ class Application {
       .then((neo4jDBConnector) => {
         self.dbConnectors.neo4jDBConnector = neo4jDBConnector;
 
+        // 4. initialize http server
+        const httpServerInitializer = new HttpServerInitializer(config.server.api);
+        httpServerInitializer.initialize();
+
+        return httpServerInitializer.start();
+      })
+      .then(() => {
         return self;
       })
   }
