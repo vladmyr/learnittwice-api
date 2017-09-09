@@ -16,6 +16,7 @@ interface CollectionDBConnector {
 
 class Application {
   public config = config;
+  public httpServerInitializer: HttpServerInitializer;
   public dbConnectors: CollectionDBConnector = {};
 
   public constructor() {}
@@ -69,10 +70,10 @@ class Application {
         self.dbConnectors.neo4jDBConnector = neo4jDBConnector;
 
         // 4. initialize http server
-        const httpServerInitializer = new HttpServerInitializer(config.server.api);
-        httpServerInitializer.initialize();
+        self.httpServerInitializer = new HttpServerInitializer(config.server.api);
+        self.httpServerInitializer.initialize();
 
-        return httpServerInitializer.start();
+        return self.httpServerInitializer.start();
       })
       .then(() => {
         return self;
