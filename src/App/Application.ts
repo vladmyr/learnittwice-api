@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import config from 'config';
 
 import MongooseDBConnector from 'src/App/Persistence/Connectors/MongooseDBConnector';
@@ -14,6 +13,14 @@ interface CollectionDBConnector {
   neo4jDBConnector?: Neo4jDBConnector
 }
 
+interface IInitConfig {
+  disableHttpServerInitialization: boolean
+}
+
+const DEFAULT_INIT_CONFIG: IInitConfig = {
+  disableHttpServerInitialization: false
+}
+
 class Application {
   public config = config;
   public httpServerInitializer: HttpServerInitializer;
@@ -21,63 +28,42 @@ class Application {
 
   public constructor() {}
 
-  public initialize(): Promise<Application> {
-    const self = this;
+  public async initialize(
+    initConfig: IInitConfig = DEFAULT_INIT_CONFIG
+  ): Promise<Application> {
 
-    return Promise
-      .resolve()
-      .then(() => {
-      //   // 1. instantiate and initialize MongooseDBConnector
-      //   const mongooseDBConnector = new MongooseDBConnector(
-      //     config.database.mongodb.uri,
-      //     config.database.mongodb.options
-      //   );
+    // 1. instantiate and initialize PostgresDBConnector
+    this.dbConnectors.postgresDBConnector = new PostgresDBConnector(
+      config.database.postgres.host,
+      config.database.postgres.port,
+      config.database.postgres.database,
+      config.database.postgres.user,
+      config.database.postgres.password,
+      config.database.postgres.ssl,
+      config.database.postgres.binary,
+      config.database.postgres.poolSize,
+    )
+    await this.dbConnectors.postgresDBConnector.initialize();
 
-      //   return mongooseDBConnector.initialize();
-      // })
-      // .then((mongooseDBConnector) => {
-      //   self.dbConnectors.mongooseDBConnector = mongooseDBConnector;
+    // 2. instantiote and initialize Noe4jDBConnector
+    this.dbConnectors.neo4jDBConnector = new Neo4jDBConnector(
+      config.database.neo4j.host,
+      config.database.neo4j.port,
+      config.database.neo4j.user,
+      config.database.neo4j.password,
+      config.database.neo4j.poolSize,
+    );
+    await this.dbConnectors.neo4jDBConnector.initialize();
 
-        // 2. instantiate and initialize PostgresDBConnector
-        const postgresDBConnector = new PostgresDBConnector(
-          config.database.postgres.host,
-          config.database.postgres.port,
-          config.database.postgres.database,
-          config.database.postgres.user,
-          config.database.postgres.password,
-          config.database.postgres.ssl,
-          config.database.postgres.binary,
-          config.database.postgres.poolSize,
-        )
+    // 3. instantiate and initialize http server
+    if (!initConfig.disableHttpServerInitialization) {
+      this.httpServerInitializer = new HttpServerInitializer(config.server.api);
+      this.httpServerInitializer.initialize();
 
-        return postgresDBConnector.initialize();
-      })
-      .then((postgresDBConnector) => {
-        self.dbConnectors.postgresDBConnector = postgresDBConnector;
+      await this.httpServerInitializer.start();
+    }
 
-        // 3. instantiate and initialize Neo4jDBConnector
-        const neo4jDBConnector = new Neo4jDBConnector(
-          config.database.neo4j.host,
-          config.database.neo4j.port,
-          config.database.neo4j.user,
-          config.database.neo4j.password,
-          config.database.neo4j.poolSize,
-        );
-
-        return neo4jDBConnector.initialize();
-      })
-      .then((neo4jDBConnector) => {
-        self.dbConnectors.neo4jDBConnector = neo4jDBConnector;
-
-        // 4. initialize http server
-        self.httpServerInitializer = new HttpServerInitializer(config.server.api);
-        self.httpServerInitializer.initialize();
-
-        return self.httpServerInitializer.start();
-      })
-      .then(() => {
-        return self;
-      })
+    return this;
   }
 }
 
