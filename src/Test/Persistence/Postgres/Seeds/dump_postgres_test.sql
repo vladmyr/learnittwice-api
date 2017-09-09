@@ -178,5 +178,59 @@ INSERT INTO "Sense" ("id", "lemmaId", "languageId", "synsetId", "tagCount") VALU
     (205995, 145249, 1, 127552, 0);
 
 --
+-- Course related data
+--
+
+-- PropertyRelation
+INSERT INTO "PropertyRelation" ("id", "value") VALUES
+    (1, 'question'),
+    (2, 'answer_correct'),
+    (3, 'answer_wrong');
+
+-- Course
+INSERT INTO "Course" ("id", "title", "slug", "briefDescription") VALUES
+    (1, 'Test Course 101', 'test_course_101', 'A brief description of the test course 101'),
+    (2, 'Test Course 102', 'test_course_102', 'A brief description of the test course 102'),
+    (3, 'Test Course 103', 'test_course_103', 'A brief description of the test course 103');
+
+-- Lesson
+INSERT INTO "Lesson" ("id", "courseId", "order", "isPublished") VALUES
+    (1, 1, 1, true),
+    (2, 1, 11, true),
+    (3, 1, 21, true);
+
+-- KnowlendgeUnit
+INSERT INTO "KnowledgeUnit" ("id", "lessonId", "order", "isPublished") VALUES
+    (1, 1, 1, true),
+    (2, 1, 11, true);
+
+-- CustomProperty
+INSERT INTO "CustomProperty" ("id", "knowledgeUnitId", "propertyRelationId", "dataType", "name", "slug", "value") VALUES
+    (1, 1, 2, 'string', 'Answer', 'answer', 8848),
+    (2, 1, 1, 'string', 'Question', 'question', 'What is the height of mount Evenest?'),
+    (3, 1, 3, 'string', 'Wrong answer #1', 'wrong_answer_1', 8844),
+    (4, 1, 3, 'string', 'Wrong answer #2', 'wrong_answer_2', 8871),
+    (5, 1, 3, 'string', 'Wrong answer #3', 'wrong_answer_3', 8852);
+
+-- SenseProperty
+INSERT INTO "SenseProperty" ("id", "knowledgeUnitId", "senseId", "propertyRelationId") VALUES
+    (1, 2, 205852, 2);
+
+-- Challenge
+INSERT INTO "Challenge" ("id", "knowledgeUnitId", "challengeType") VALUES
+    (1, 1, 'select_choiсe'),
+    (2, 2, 'typein_lemma');
+
+--
+-- Synchronize sequences for all tables
+--
+SELECT setval('"Course_id_seq"', (SELECT max("id") FROM "Course"));
+SELECT setval('"Lesson_id_seq"', (SELECT max("id") FROM "Lesson"));
+SELECT setval('"KnowledgeUnit_id_seq"', (SELECT max("id") FROM "KnowledgeUnit"));
+SELECT setval('"CustomProperty_id_seq"', (SELECT max("id") FROM "CustomProperty"));
+SELECT setval('"SenseProperty_id_seq"', (SELECT max("id") FROM "SenseProperty"));
+SELECT setval('"PropertyRelation_id_seq"', (SELECT max("id") FROM "PropertyRelation"));
+
+--
 -- PostgreSQL database dump complete
 --

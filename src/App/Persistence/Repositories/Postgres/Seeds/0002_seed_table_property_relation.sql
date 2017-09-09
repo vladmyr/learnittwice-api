@@ -1,0 +1,4 @@
+-- INSERT INTO "PropertyRelation" (value)
+--   ('question'),
+--   ('answer_correct'),
+--   ('answer_wrong');

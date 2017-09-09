@@ -8,6 +8,7 @@
     "@types/db-migrate-base": "0.0.3",
     "@types/db-migrate-pg": "0.0.3",
     "@types/knex": "0.0.40",
+    "@types/lodash": "^4.14.74",
     "@types/mongoose": "^4.5.41",
     "@types/node": "^6.0.46",
     "@types/pg": "^6.1.34",

@@ -38,9 +38,10 @@ class TestDatabaseBuilderPostgres {
     return this._db.any(PG_TRUNCATE, [Postgres.FormatName(arrTableName)]);
   }
 
-  private restoreDump(): Promise<void> {
+  private async restoreDump(): Promise<void> {
     const dump = new QueryFile(FILEPATH_DB_DUMP);
-    return this._db.none(dump)
+    await this._db.any(dump);
+    return;
   }
 }
 

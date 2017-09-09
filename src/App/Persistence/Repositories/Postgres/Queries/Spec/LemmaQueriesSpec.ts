@@ -81,7 +81,7 @@ describe('LemmaQueries', () => {
         })
     });
 
-    it ('returns empty arry for multiple non-existing lemmas', () => {
+    it ('returns empty array for multiple non-existing lemmas', () => {
       return LemmaQueries.GetInstance()
         .findMany([-1, -2, 999999])
         .then((arrLemma) => {

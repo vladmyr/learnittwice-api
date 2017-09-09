@@ -16,6 +16,7 @@ export interface IAbstractCommands<TProps, TDao> {
   createMany(lstProps: TProps[], t?: Tx): Promise<TProps[]>
   updateOne(id: number, props: TProps, t?: Tx): Promise<TDao | undefined>
   deleteOne(id: number, t?: Tx): Promise<void>
+  deleteMany(ids: number[], t?: Tx): Promise<void>
 
   build<T>(queryBuilder, t?: Tx): Promise<IArrayExt<T>>
 }
