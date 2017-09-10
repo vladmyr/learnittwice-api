@@ -15,7 +15,9 @@ const main = async (scope: TEST_SCOPE) => {
   const application = new Application();
 
   try {
-    await application.initialize()
+    await application.initialize({
+      disableHttpServerInitialization: true
+    });
 
     switch(scope) {
       case TEST_SCOPE.POSTGRES:
