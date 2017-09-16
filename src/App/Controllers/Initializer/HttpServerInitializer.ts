@@ -9,6 +9,7 @@ import RouteMiddleware from './RouteMiddleware';
 
 import AbstractHttpController from '../AbstractHttpController'
 import HelloController from '../HelloController';
+import CustomPropertyController from '../CustomPropertyController';
 
 interface IConfig {
   port: number
@@ -33,6 +34,7 @@ class HttpServerInitializer {
 
     // initialize each controller
     this._initializeController(new HelloController());
+    this._initializeController(new CustomPropertyController());
 
     // register url-not-found middleware
     this._expressApp.use('*', RouteMiddleware.NotFound)

@@ -22,22 +22,28 @@ abstract class HttpController {
     return this._rootPath;
   }
 
-  protected _validateParams(schemas: Joi.Schema[]) {
+  protected _validateParams(schemas: Joi.Schema | Joi.Schema[]) {
     return this._validate(schemas);
   }
 
-  protected _validateBody(schemas: Joi.Schema[]) {
+  protected _validateBody(schemas: Joi.Schema | Joi.Schema[]) {
     return this._validate(schemas, 'body');
   }
 
-  protected _validateQuery(schemas: Joi.Schema[]) {
+  protected _validateQuery(schemas: Joi.Schema | Joi.Schema[]) {
     return this._validate(schemas, 'query');
   }
 
   private _validate(
-    schemas: Joi.Schema[], 
+    schemas: Joi.Schema | Joi.Schema[], 
     prop: 'params' | 'body' | 'query' = 'params'
   ) {
+    let lstSchema: Joi.Schema[];
+
+    if (!Array.isArray(schemas)) {
+      lstSchema = [schemas];
+    }
+
     return (
       req: Core.Request, 
       res: Core.Response, 
@@ -47,7 +53,7 @@ abstract class HttpController {
       let isValid = false;
       let schema: Joi.Schema;
 
-      while (!isValid && schemaIndex < schemas.length) {
+      while (!isValid && schemaIndex < lstSchema.length) {
         schema = schemas[schemaIndex];
         const validationResult = Joi.validate(req[prop], schema);
         isValid = !validationResult.error;

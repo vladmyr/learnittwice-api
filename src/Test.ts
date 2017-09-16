@@ -16,7 +16,7 @@ const main = async (scope: TEST_SCOPE) => {
 
   try {
     await application.initialize({
-      disableHttpServerInitialization: true
+      disableHttpServerInitialization: false
     });
 
     switch(scope) {

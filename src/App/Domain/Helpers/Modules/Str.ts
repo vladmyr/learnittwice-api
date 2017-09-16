@@ -1,3 +1,8 @@
+import * as Slug from 'slug';
+
+Slug.defaults.mode = 'rfc3986';
+Slug.defaults.modes.rfc3986.replacement = '_';
+
 class Str {
   // /**
   //  * Match all regex occurrences in string
@@ -30,6 +35,10 @@ class Str {
       str = str.slice(index);
       index = str.indexOf(char) + 1;
     }
+  }
+
+  public static Slugify (str = ''): string {
+    return Slug(str);
   }
 }
 
