@@ -8,7 +8,7 @@ import main, { TEST_SCOPE } from 'src/Test';
 
 program
   .option('-h, --help', 'Prints help')
-  .option('-s, --scope <scope>', 'Scope of testing', /^(pg|n4j)$/i);
+  .option('-s, --scope <scope>', 'Scope of testing', /^(pg|n4j|ctrl)$/i);
 
 const cli = program.parse(process.argv)
 
@@ -19,6 +19,9 @@ if (cli.scope) {
       break;
     case 'n4j':
       main(TEST_SCOPE.NEO4J);
+      break;
+    case 'ctrl':
+      main(TEST_SCOPE.CONTROLLERS);
       break;
     default:
       cli.outputHelp();

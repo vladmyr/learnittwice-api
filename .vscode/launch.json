@@ -36,6 +36,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "start:test:ctrl",
+            "program": "${workspaceRoot}/bin/dev_test.js",
+            "args": ["-s", "ctrl"],
+            "cwd": "${workspaceRoot}",
+            "console": "internalConsole",
+            "sourceMaps": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "cli:test pg2n4jmap",
             "program": "${workspaceRoot}/bin/dev_test_cli.js",
             "args": ["pg2n4jmap"],

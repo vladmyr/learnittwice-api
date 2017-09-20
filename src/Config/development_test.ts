@@ -1,6 +1,8 @@
 const config = {
   server: {
     api: {
+      protocol: 'http',
+      host: '127.0.0.1',
       port:8090
     }
   },
@@ -55,6 +57,7 @@ const config = {
   },
   path: {
     app: 'src/App',
+    controllers: 'src/App/Controllers',
     persistence: {
       postgres: 'src/App/Persistence/Repositories/Postgres',
       neo4j: 'src/App/Persistence/Repositories/Neo4j'
