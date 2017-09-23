@@ -4,13 +4,13 @@ import * as pgPromise from 'pg-promise';
 import PostgresModels from 'src/App/Persistence/Repositories/PostgresModels';
 
 interface IConnectionConfig extends pgPromise.IConfig {
-  poolSize:number
+  poolSize: number
 }
 
 class PostgresDBConnector {
-  private _connectionConfig:IConnectionConfig
-  private _pgp:pgPromise.IMain;
-  private _db:pgPromise.IDatabase<{}>;
+  private _connectionConfig: IConnectionConfig
+  private _pgp: pgPromise.IMain;
+  private _db: pgPromise.IDatabase<{}>;
 
   public constructor(
     host: string,
@@ -40,24 +40,27 @@ class PostgresDBConnector {
     this._pgp = pgPromise(initOptions);
   }
 
-  public initialize():PostgresDBConnector {
+  public initialize(): PostgresDBConnector {
     this._db = this._pgp(this._connectionConfig);
-    this._initializeModels();
+    this._initContext();
+    this._initModels();
 
     return this;
   }
 
-  public getDB():pgPromise.IDatabase<{}> {
+  public getDB(): pgPromise.IDatabase<{}> {
     return this._db;
   }
 
-  public disconnect():void {
+  public disconnect(): void {
     this._pgp.end();
   }
 
-  
+  private _initContext(): void {
 
-  private _initializeModels():void {
+  }
+
+  private _initModels(): void {
     // iterate over all CQRS models
     for (let modelName in PostgresModels) {
       // initialize an instance of each model

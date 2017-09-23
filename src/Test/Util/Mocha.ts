@@ -14,4 +14,8 @@ export class Postgres {
   public static Rollback() {
     return Promise.reject(new Error(Postgres.MESSAGE_ROLLBACK));
   }
+
+  public static async DryRun(fn) {
+    
+  }
 }

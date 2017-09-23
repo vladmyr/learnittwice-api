@@ -1,26 +1,23 @@
 import * as assert from 'assert';
 import { errors } from 'pg-promise';
 
-import { Postgres } from 'src/Test/Util/Mocha';
+// import { Postgres } from 'src/Test/Util/Mocha';
+import { Postgres } from 'src/App/Domain/Helpers/Util';
 import LemmaCommands from '../LemmaCommands';
 
 const lemmaCommands = LemmaCommands.GetInstance();
-const db = lemmaCommands.getDb();
 
 describe('LemmaCommands', () => {
   describe('#createOne', () => {
-    it ('creates new lemma', () => {
+    it ('creates new lemma', async () => {
       const lemma = 'lemma101';
-      return Postgres.ResolveTest(db.tx((t) => {
-        return lemmaCommands
-          .createOne({ lemma }, t)
-          .then((savedLemma) => {
-            assert.equal(typeof savedLemma.id, 'number');
-            assert.equal(savedLemma.lemma, lemma);
-            
-            return Postgres.Rollback();
-          })
-      }));
+
+      return Postgres.DryRun(async (t) => {
+        const record = await lemmaCommands.createOne({ lemma }, t);
+
+        assert.equal(typeof record.id, 'number');
+        assert.equal(record.lemma, lemma);  
+      })
     });
   });
 
@@ -41,15 +38,11 @@ describe('LemmaCommands', () => {
         { lemma: 'lemma967' }, { lemma: 'lemma968' }
       ];
 
-      return Postgres.ResolveTest(db.tx((t) => {
-        return lemmaCommands
-          .createMany(lemmas, t)
-          .then((savedLemmas) => {
-            assert.equal(savedLemmas.length, lemmas.length);
-
-            return Postgres.Rollback();
-          })
-      }))
+      return Postgres.DryRun(async (t) => {
+        const lstRecords = await lemmaCommands.createMany(lemmas, t)
+          
+        assert.equal(lstRecords.length, lemmas.length);
+      })
     })
   })
 
@@ -60,15 +53,12 @@ describe('LemmaCommands', () => {
         lemma: 'lemma101'
       }
 
-      return Postgres.ResolveTest(db.tx((t) => {
-        return lemmaCommands
-          .updateOne(expectedLemma.id, { lemma: expectedLemma.lemma }, t)
-          .then((updatedLemma) => {
-            assert.deepEqual(updatedLemma, expectedLemma);
-
-            return Postgres.Rollback();
-          })
-      }));
+      return Postgres.DryRun(async (t) => {
+        const updatedLemma = await lemmaCommands
+          .updateOne(expectedLemma.id, { lemma: expectedLemma.lemma }, t);
+        
+        assert.deepEqual(updatedLemma, expectedLemma);
+      });
     })
 
     it ('raises a QueryResultError on updating non-existing lemma', () => {
@@ -77,13 +67,14 @@ describe('LemmaCommands', () => {
         lemma: 'lemma101'
       }
 
-      return db.tx((t) => {
-        return lemmaCommands
-          .updateOne(expectedLemma.id, { lemma: expectedLemma.lemma }, t)
+      return Postgres.DryRun(async (t) => {
+        try {
+          await lemmaCommands
+            .updateOne(expectedLemma.id, { lemma: expectedLemma.lemma }, t)
+        } catch (e) {
+          assert.equal(e.code, errors.queryResultErrorCode.noData);
+        }
       })
-      .catch((err) => {
-        assert.equal(err.code, errors.queryResultErrorCode.noData);
-      });
     })
   });
 
@@ -91,15 +82,10 @@ describe('LemmaCommands', () => {
     it ('deletes existing lemma', () => {
       const lemmaId = 1;
 
-      return Postgres.ResolveTest(db.tx((t) => {
-        return lemmaCommands
-          .deleteOne(lemmaId, t)
-          .then((data) => {
-            assert.equal(data, null);
-
-            return Postgres.Rollback();
-          })
-      }));
+      return Postgres.DryRun(async (t) => {
+        const data = await lemmaCommands.deleteOne(lemmaId, t);
+        assert.equal(data, null);
+      })
     })
   })
 })

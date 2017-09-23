@@ -57,11 +57,15 @@ class CustomPropertyController extends AbstractHttpController {
       const record = await CustomPropertyService
         .FindOne(Number.parseInt(req.params.id));
 
-      return res
-        .status(200)
-        .json({
-          data: record
-        })
+      if (record) {
+        return res
+          .status(200)
+          .json({
+            data: record
+          })
+      } else {
+        return res.status(404).end();
+      }
     } catch (e) {
       return next(e)
     }
