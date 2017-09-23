@@ -66,7 +66,7 @@ export default abstract class AbstractCommands<TProps, TDAO>
     return result;
   }
 
-  public async deleteOne (id: number, t?: Tx): Promise<void> {
+  public async deleteOne(id: number, t?: Tx): Promise<void> {
     const executionScope = this._getScopeOfExecution(t);
 
     try {
@@ -79,7 +79,7 @@ export default abstract class AbstractCommands<TProps, TDAO>
     }
   }
 
-  public async deleteMany (ids: number[], t?: Tx): Promise<void> {
+  public async deleteMany(ids: number[], t?: Tx): Promise<void> {
     const executionScope = this._getScopeOfExecution(t);
 
     try {

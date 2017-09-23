@@ -13,7 +13,6 @@ export const CREATE_SCHEMA = Joi.object().keys({
 });
   
 export const UPDATE_SCHEMA = Joi.object().keys({
-  id: Joi.number().min(1).max(2147483647).required(),
   knowledgeUnitId: Joi.number().min(1).max(2147483647).required(),
   propertyRelationId: Joi.number().min(1).max(2147483647).required(),
   dataType: Joi.string().min(2).max(255).required(),

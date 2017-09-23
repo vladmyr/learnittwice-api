@@ -1,9 +1,9 @@
 import * as Core from 'express-serve-static-core';
 
-import { ID_SCHEMA, CREATE_SCHEMA, UPDATE_SCHEMA } 
+import { ID_SCHEMA, CREATE_SCHEMA, UPDATE_SCHEMA }
   from 'src/App/Infrastructure/CustomProperty/Schemas/ValidationSchema';
 
-import CustomPropertyService 
+import CustomPropertyService
   from 'src/App/Infrastructure/CustomProperty/Services/CustomPropertyService';
 import AbstractHttpController from './AbstractHttpController';
 
@@ -11,20 +11,20 @@ class CustomPropertyController extends AbstractHttpController {
   public constructor() {
     super('/custom_properties');
 
-    this.router.post('/', 
+    this.router.post('/',
       this._validateBody(CREATE_SCHEMA),
       this._createOne.bind(this)
     );
-    this.router.get('/:id', 
+    this.router.get('/:id',
       this._validateParams(ID_SCHEMA),
       this._getOne.bind(this)
     );
-    this.router.post('/:id', 
+    this.router.post('/:id',
       this._validateParams(ID_SCHEMA),
       this._validateBody(UPDATE_SCHEMA),
       this._updateOne.bind(this)
     );
-    this.router.delete('/:id', 
+    this.router.delete('/:id',
       this._validateParams(ID_SCHEMA),
       this._deleteOne.bind(this)
     );
@@ -70,8 +70,29 @@ class CustomPropertyController extends AbstractHttpController {
       return next(e)
     }
   }
-  private _updateOne() {}
-  private _deleteOne() {}
+  private async _updateOne(
+    req: Core.Request,
+    res: Core.Response,
+    next: Core.NextFunction
+  ) {
+    try {
+      const record = await CustomPropertyService
+        .UpdateOne(req.params.id, req.body);
+
+      if (record) {
+        return res
+          .status(201)
+          .json({
+            data: record
+          })
+      } else {
+        return res.status(404).end();
+      }
+    } catch (e) {
+      return next(e);
+    }
+  }
+  private _deleteOne() { }
 }
 
 export default CustomPropertyController;

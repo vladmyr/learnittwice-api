@@ -21,15 +21,13 @@ interface IProps {
 
 class CustomPropertyService {
   public static async CreateOne(props: IProps, t?: Tx) {
-    const commandProps: ICustomPropertyProps = _.extend({
-      slug: Str.Slugify(props.name)
-    }, props);
-
+    const commandProps: ICustomPropertyProps = this._ExtendWithSlug(props);
     return await CustomPropertyCommands.GetInstance().createOne(commandProps, t);
   }
 
   public static async UpdateOne(id: number, props: IProps, t?: Tx) {
-
+    const commandProps: ICustomPropertyProps = this._ExtendWithSlug(props);
+    return await CustomPropertyCommands.GetInstance().updateOne(id, commandProps, t);
   }
 
   public static async FindOne(id: number, t?: Tx) {
@@ -41,6 +39,10 @@ class CustomPropertyService {
   }
 
   private constructor() {};
+
+  private static _ExtendWithSlug(props: IProps): ICustomPropertyProps {
+    return _.extend({}, props, { slug: Str.Slugify(props.name) });
+  }
 }
 
 export default CustomPropertyService;
