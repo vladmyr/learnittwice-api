@@ -54,10 +54,16 @@ abstract class HttpController {
       let schema: Joi.Schema;
 
       while (!isValid && schemaIndex < lstSchema.length) {
-        schema = schemas[schemaIndex];
-        const validationResult = Joi.validate(req[prop], schema);
-        isValid = !validationResult.error;
-        schemaIndex++;
+        schema = lstSchema[schemaIndex];
+        try {
+          const validationResult = Joi.validate(req[prop], schema);
+          isValid = !validationResult.error;
+        } catch (e) {
+          // FIXME: logging
+          console.error(e);
+        } finally {
+          schemaIndex++;
+        }
       }
 
       if (isValid) {

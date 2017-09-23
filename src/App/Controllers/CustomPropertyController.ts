@@ -36,7 +36,7 @@ class CustomPropertyController extends AbstractHttpController {
     next: Core.NextFunction
   ) {
     try {
-      const record = CustomPropertyService.CreateOne(req.body);
+      const record = await CustomPropertyService.CreateOne(req.body);
 
       return res
         .status(201)
@@ -48,7 +48,24 @@ class CustomPropertyController extends AbstractHttpController {
     }
   }
 
-  private _getOne() {}
+  private async _getOne(
+    req: Core.Request,
+    res: Core.Response,
+    next: Core.NextFunction
+  ) {
+    try {
+      const record = await CustomPropertyService
+        .FindOne(Number.parseInt(req.params.id));
+
+      return res
+        .status(200)
+        .json({
+          data: record
+        })
+    } catch (e) {
+      return next(e)
+    }
+  }
   private _updateOne() {}
   private _deleteOne() {}
 }

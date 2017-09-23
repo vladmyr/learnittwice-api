@@ -6,6 +6,8 @@ import { ICustomPropertyProps }
 
 import CustomPropertyCommands 
   from 'src/App/Persistence/Repositories/Postgres/Commands/CustomPropertyCommands';
+import CustomPropertyQueries 
+  from 'src/App/Persistence/Repositories/Postgres/Queries/CustomPropertyQueries';
 
 interface IProps {
   knowledgeUnitId: ICustomPropertyProps['knowledgeUnitId'],
@@ -29,7 +31,7 @@ class CustomPropertyService {
   }
 
   public static async FindOne(id: number) {
-
+    return await CustomPropertyQueries.GetInstance().findOne(id);
   }
 
   public static async DeleteOne(id: number) {
