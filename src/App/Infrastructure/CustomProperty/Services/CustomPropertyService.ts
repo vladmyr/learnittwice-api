@@ -35,7 +35,7 @@ class CustomPropertyService {
   }
 
   public static async DeleteOne(id: number, t?: Tx) {
-
+    return await CustomPropertyCommands.GetInstance().deleteOne(id, t);
   }
 
   private constructor() {};

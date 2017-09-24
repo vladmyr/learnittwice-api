@@ -100,6 +100,45 @@ describe('CustomPropertyController', function() {
         assert.equal(typeof resBody.data.id, 'number');
         assert.deepEqual(_.omit(resBody.data, 'id', 'slug'), payload);
       })
+
+      it('400 on invalid payload', async () => {
+        const res = await Fetch(
+          HttpTestHelper.ResolveDomain('/custom_properties/1'),
+          _.extend({
+            body: JSON.stringify(_.omit(payload, 'dataType'))
+          }, postRequestOptions)
+        )
+        const resBody = await res.json();
+
+        assert.equal(res.status, 400);
+        assert.notEqual(typeof resBody.error, 'undefined');
+        assert.equal(typeof resBody.error.code, 'number');
+        assert.equal(typeof resBody.error.message, 'string');
+      })
+    })
+
+    describe('DELETE', () => {
+      it('204 for existing record', async () => {
+        const res = await Fetch(
+          HttpTestHelper.ResolveDomain('/custom_properties/1'),
+          { method: 'DELETE' }
+        )
+        const resBody = await res.text();
+
+        assert.equal(res.status, 204);
+        assert.equal(resBody, '');
+      })
+
+      it('204 for not-existing record', async () => {
+        const res = await Fetch(
+          HttpTestHelper.ResolveDomain('/custom_properties/1002'),
+          { method: 'DELETE' }
+        )
+        const resBody = await res.text();
+
+        assert.equal(res.status, 204);
+        assert.equal(resBody, '');
+      })
     })
   })
 });

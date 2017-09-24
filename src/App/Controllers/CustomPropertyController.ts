@@ -92,7 +92,19 @@ class CustomPropertyController extends AbstractHttpController {
       return next(e);
     }
   }
-  private _deleteOne() { }
+  private async _deleteOne(
+    req: Core.Request,
+    res: Core.Response,
+    next: Core.NextFunction
+  ) {
+    try {
+      await CustomPropertyService.DeleteOne(req.params.id);
+
+      return res.status(204).send();
+    } catch (e) {
+      return next(e);
+    }
+  }
 }
 
 export default CustomPropertyController;
