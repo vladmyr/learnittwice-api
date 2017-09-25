@@ -12,6 +12,12 @@ class RollbackTrigger extends Error {
 }
 
 class Postgres {
+  private static _DryTx: Tx | undefined
+
+  public static GetDryTx(): Tx | undefined {
+    return this._DryTx;
+  }
+
   public static FormatName(tableName: string | string[]): string {
     const arrTableName = Array.isArray(tableName)
       ? tableName
@@ -34,11 +40,14 @@ class Postgres {
 
   public static async DryRun(fn): Promise<void> {
     return await LemmaQueries.GetInstance().getDb().tx(async (t: Tx) => {
+      this._SetDryTx(t);
       await fn(t);
 
       // throw an exception to trigger rollback action
       return Promise.reject(new RollbackTrigger());
     }).catch((e) => {
+      this._FlushDryTx();
+      
       // at this point transaction get rollback'ed
       if (e instanceof RollbackTrigger) {
         // resolve exception
@@ -48,6 +57,16 @@ class Postgres {
         throw e;
       }
     })
+  }
+
+  private static _SetDryTx(t: Tx) {
+    this._DryTx = t;
+    return;
+  }
+
+  private static _FlushDryTx() {
+    this._DryTx = undefined;
+    return
   }
 }
 

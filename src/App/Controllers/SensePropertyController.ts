@@ -1,17 +1,15 @@
 import * as Core from 'express-serve-static-core';
 
-import Postgres from 'src/App/Domain/Helpers/Modules/Postgres';
-
 import { ID_SCHEMA, CREATE_SCHEMA, UPDATE_SCHEMA }
-  from 'src/App/Infrastructure/CustomProperty/Schemas/ValidationSchema';
+  from 'src/App/Infrastructure/SenseProperty/Schemas/ValidationSchema';
 
-import CustomPropertyService
-  from 'src/App/Infrastructure/CustomProperty/Services/CustomPropertyService';
+import SensePropertyService
+  from 'src/App/Infrastructure/SenseProperty/Services/SensePropertyService';
 import AbstractHttpController from './AbstractHttpController';
 
-class CustomPropertyController extends AbstractHttpController {
+class SensePropertyController extends AbstractHttpController {
   public constructor() {
-    super('/custom_properties');
+    super('/sense_properties');
 
     this.router.post('/',
       this._validateBody(CREATE_SCHEMA),
@@ -38,7 +36,7 @@ class CustomPropertyController extends AbstractHttpController {
     next: Core.NextFunction
   ) {
     try {
-      const record = await CustomPropertyService.CreateOne(req.body);
+      const record = await SensePropertyService.CreateOne(req.body);
 
       return res
         .status(201)
@@ -56,7 +54,7 @@ class CustomPropertyController extends AbstractHttpController {
     next: Core.NextFunction
   ) {
     try {
-      const record = await CustomPropertyService
+      const record = await SensePropertyService
         .FindOne(Number.parseInt(req.params.id));
 
       if (record) {
@@ -78,7 +76,7 @@ class CustomPropertyController extends AbstractHttpController {
     next: Core.NextFunction
   ) {
     try {
-      const record = await CustomPropertyService
+      const record = await SensePropertyService
         .UpdateOne(req.params.id, req.body);
 
       if (record) {
@@ -100,7 +98,7 @@ class CustomPropertyController extends AbstractHttpController {
     next: Core.NextFunction
   ) {
     try {
-      await CustomPropertyService.DeleteOne(req.params.id, Postgres.GetDryTx());
+      await SensePropertyService.DeleteOne(req.params.id);
 
       return res.status(204).send();
     } catch (e) {
@@ -109,4 +107,4 @@ class CustomPropertyController extends AbstractHttpController {
   }
 }
 
-export default CustomPropertyController;
+export default SensePropertyController;

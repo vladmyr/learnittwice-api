@@ -2,6 +2,7 @@ import * as assert from 'assert'
 import * as _ from 'lodash';
 import Fetch from 'node-fetch';
 
+import Postgres from 'src/App/Domain/Helpers/Modules/Postgres';
 import HttpTestHelper from 'src/Test/Util/HttpTestHelper';
 
 describe('CustomPropertyController', function() {
@@ -119,14 +120,16 @@ describe('CustomPropertyController', function() {
 
     describe('DELETE', () => {
       it('204 for existing record', async () => {
-        const res = await Fetch(
-          HttpTestHelper.ResolveDomain('/custom_properties/1'),
-          { method: 'DELETE' }
-        )
-        const resBody = await res.text();
-
-        assert.equal(res.status, 204);
-        assert.equal(resBody, '');
+        return Postgres.DryRun(async () => {
+          const res = await Fetch(
+            HttpTestHelper.ResolveDomain('/custom_properties/1'),
+            { method: 'DELETE' }
+          )
+          const resBody = await res.text();
+  
+          assert.equal(res.status, 204);
+          assert.equal(resBody, '');
+        })
       })
 
       it('204 for not-existing record', async () => {
